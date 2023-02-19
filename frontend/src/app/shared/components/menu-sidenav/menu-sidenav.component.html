@@ -1,0 +1,35 @@
+<mat-nav-list class="scrollbar-styled sidenav-min-width" style="width: 100%; height: 90%; overflow: auto;">
+  <ng-template ngFor let-menu [ngForOf]="list" let-i="index">
+
+    <mat-expansion-panel class="menu-sidebar" [class.mat-elevation-z0]="true" [hideToggle]="!menu.subMenu">
+
+      <mat-expansion-panel-header *ngIf="menu.link" [routerLink]="menu.link" routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact: true}">
+        <mat-panel-title>
+
+          <a [routerLink]="menu.link"><span class="color-primary"
+              style="font-size: 16px; padding-top: 4px;">{{menu.title}}</span></a>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <mat-expansion-panel-header *ngIf="!menu.link">
+        <mat-panel-title>
+
+          <span class="menu-text" style="font-size: 18px; padding-top: 4px;">{{menu.title}}</span>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-template ngFor let-submenu [ngForOf]="menu.subMenu" let-i="index">
+        <mat-expansion-panel [class.mat-elevation-z0]="true" hideToggle>
+          <mat-expansion-panel-header [routerLink]="submenu.link" routerLinkActive="active">
+            <mat-panel-title>
+              <a [routerLink]="submenu.link"><span class="menu-text"
+                  style="font-size: 16px; margin-left: 6px; padding-top: 4px;">{{submenu.title}}</span></a>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+        </mat-expansion-panel>
+      </ng-template>
+
+    </mat-expansion-panel>
+  </ng-template>
+</mat-nav-list>

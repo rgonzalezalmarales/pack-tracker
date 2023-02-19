@@ -1,0 +1,38 @@
+<div class="container-app">
+  <mat-sidenav-container class="sidenav-container" autosize hasBackdrop="false">
+    <mat-sidenav #sidenav class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+
+      <mat-toolbar color="primary" class="mat-elevation-z2">
+        <button type="button" *ngIf="!(isHandset$ | async) === false" (click)="sidenav.toggle()"
+          aria-label="Toggle sidenav" mat-icon-button>
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+        {{appName}}
+      </mat-toolbar>
+
+      <clarivia-menu-sidenav [list]="menu">
+      </clarivia-menu-sidenav>
+
+    </mat-sidenav>
+
+    <mat-sidenav-content class="layout">
+      <mat-toolbar color="primary" class="fixed mat-elevation-z2">
+        <button type="button" (click)="sidenav.toggle()" aria-label="Toggle sidenav" mat-icon-button>
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+      </mat-toolbar>
+
+      <div style="min-height: 98vh; height: auto; overflow: hidden;">
+        <div [@routerTransition]="o.isActivated">
+          <router-outlet #o="outlet"></router-outlet>
+        </div>
+      </div>
+
+      <footer class="footer" style="margin: 4px;">
+        <h3 class="mat-h3">{{appName}} &#169; {{year}} Derechos Reservados - Ciudad de México </h3>
+      </footer>
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
+</div>

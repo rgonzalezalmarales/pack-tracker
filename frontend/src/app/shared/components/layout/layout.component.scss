@@ -1,0 +1,49 @@
+.sidenav-container {
+  height: 100%;
+}
+
+.sidenav {
+  width: 200px;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+sidenav-container {
+  height: 100%;
+}
+
+.fixed {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1024;
+}
+
+.layout {
+  overflow: hidden;
+}
+
+.router-padding-top {
+  padding-top: 75px;
+}
+
+.toolbar-sidenav {
+  z-index: 1024;
+}
+
+.mat-toolbar-row,
+.mat-toolbar-single-row {
+  height: 75px;
+  padding: 1em;
+  box-shadow: 0px 6px 8px -6px rgba(211, 218, 241, 0.4);
+}
+
+::ng-deep .mat-menu-panel {
+  background: #ffffff;
+  box-shadow: 0px 0px 24px rgba(211, 218, 241, 0.6) !important;
+  border-radius: 12px;
+}
