@@ -1,26 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSeedDto } from './dto/create-seed.dto';
-import { UpdateSeedDto } from './dto/update-seed.dto';
+
+import { initialData } from './data/seed-data';
+import { AuthService } from 'src/auth/auth.service';
+// import { AxiosAdapterService } from 'src/common/adapters/axios-adapter.service';
 
 @Injectable()
 export class SeedService {
-  create(createSeedDto: CreateSeedDto) {
-    return 'This action adds a new seed';
+  constructor(
+    // private readonly http: AxiosAdapterService,
+    private readonly authService: AuthService,
+  ) {}
+
+  async executeSeed() {
+    await this.insertUsers();
+    return 'Seed excecuted';
   }
 
-  findAll() {
-    return `This action returns all seed`;
-  }
+  private async insertUsers() {
+    const { users } = initialData;
 
-  findOne(id: number) {
-    return `This action returns a #${id} seed`;
-  }
+    await this.authService.deleteManyById();
 
-  update(id: number, updateSeedDto: UpdateSeedDto) {
-    return `This action updates a #${id} seed`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} seed`;
+    return this.authService.insertManny(users);
   }
 }

@@ -39,3 +39,9 @@ schema.graphql
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+#MongoDB
+mongo/
+
+#Variables de entorno
+.env

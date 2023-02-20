@@ -1,34 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+// import { Auth } from 'src/auth/decorators';
+// import { ValidRoles } from 'src/auth/interfaces';
 import { SeedService } from './seed.service';
-import { CreateSeedDto } from './dto/create-seed.dto';
-import { UpdateSeedDto } from './dto/update-seed.dto';
 
+@ApiTags('Seed')
 @Controller('seed')
 export class SeedController {
   constructor(private readonly seedService: SeedService) {}
 
-  @Post()
-  create(@Body() createSeedDto: CreateSeedDto) {
-    return this.seedService.create(createSeedDto);
-  }
-
+  // @Auth(ValidRoles.admin)
   @Get()
-  findAll() {
-    return this.seedService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.seedService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSeedDto: UpdateSeedDto) {
-    return this.seedService.update(+id, updateSeedDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.seedService.remove(+id);
+  executeSeed() {
+    return this.seedService.executeSeed();
   }
 }
