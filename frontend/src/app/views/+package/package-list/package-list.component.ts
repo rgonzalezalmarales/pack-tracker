@@ -18,6 +18,12 @@ import { saveAs } from 'file-saver';
 
 import { JsonToCsvService } from '@app/shared/services/json-to-csv.service';
 import { PackageService } from '../services/package.service';
+import { PackStatus } from '../interfaces';
+import { HelperService } from '../services/helper.service';
+
+// const today = new Date();
+// const month = today.getMonth();
+// const year = today.getFullYear();
 
 @Component({
   selector: 'app-package-list',
@@ -25,8 +31,6 @@ import { PackageService } from '../services/package.service';
   styleUrls: ['./package-list.component.scss'],
 })
 export class PackageListComponent implements OnInit {
-  filterForm: FormGroup | any;
-
   displayedColumns: string[] = [
     // 'account',
     'description',
@@ -50,24 +54,41 @@ export class PackageListComponent implements OnInit {
 
   selection = new SelectionModel<any>(true, []);
 
+  filterForm: FormGroup = this.formBuilder.group({
+    description: [],
+    dateGte: [],
+    dateLte: [],
+    status: [],
+  });
+
+  translateSt = (status: PackStatus) => this.helper.translateStatus(status);
+
+  getStatus = [
+    {
+      value: PackStatus.Delivered,
+      label: this.translateSt(PackStatus.Delivered),
+    },
+    {
+      value: PackStatus.Received,
+      label: this.translateSt(PackStatus.Received),
+    },
+    {
+      value: PackStatus.Transit,
+      label: this.translateSt(PackStatus.Transit),
+    },
+  ];
+
   subscriptions: Subscription[] = [];
 
   constructor(
     public readonly dialog: MatDialog,
     private readonly formBuilder: FormBuilder,
     private readonly packageService: PackageService,
-    private readonly jsonToCsvService: JsonToCsvService
+    private readonly jsonToCsvService: JsonToCsvService,
+    private readonly helper: HelperService
   ) {}
 
-  ngOnInit(): void {
-    this.filterForm = this.formBuilder.group({
-      description: [],
-      account: [],
-      departament: [],
-      typicalBalance: [],
-      activeType: [],
-    });
-  }
+  ngOnInit(): void {}
 
   filter(): void {
     this.filter$.next(true);
@@ -111,9 +132,12 @@ export class PackageListComponent implements OnInit {
               sort = '-';
             }
 
+            const filters = this.buildFilter();
+
             return this.packageService.getPackages({
               limit: this.paginator.pageSize,
               offset: this.paginator.pageIndex * this.paginator.pageSize,
+              ...filters,
             });
           })
         )
@@ -139,43 +163,30 @@ export class PackageListComponent implements OnInit {
 
   private buildFilter(): any {
     const filters: any = {
-      contains: [],
+      // contains: [],
     };
 
-    if (this.filterForm.get('account').value) {
-      filters['contains'].push({
-        field: 'account',
-        value: this.filterForm.get('account').value,
-      });
+    const { dateGte, dateLte, status, description } = this.filterForm.value;
+
+    if (dateGte) {
+      filters['dateGte'] = dateGte;
+      filters['dateLte'] = dateLte || dateGte;
     }
 
-    if (this.filterForm.get('description').value) {
-      filters['contains'].push({
-        field: 'description',
-        value: this.filterForm.get('description').value,
-      });
+    if (status) {
+      filters['status'] = status;
     }
 
-    if (this.filterForm.get('departament').value) {
-      filters['contains'].push({
-        field: 'departament',
-        value: this.filterForm.get('departament').value,
-      });
+    if (description) {
+      filters['description'] = description;
     }
 
-    if (this.filterForm.get('typicalBalance').value) {
-      filters['contains'].push({
-        field: 'typicalBalance',
-        value: this.filterForm.get('typicalBalance').value,
-      });
-    }
-
-    if (this.filterForm.get('activeType').value) {
-      filters['contains'].push({
-        field: 'activeType',
-        value: this.filterForm.get('activeType').value,
-      });
-    }
+    // if (this.filterForm.get('account').value) {
+    //   filters['contains'].push({
+    //     field: 'account',
+    //     value: this.filterForm.get('account').value,
+    //   });
+    // }
 
     return filters;
   }

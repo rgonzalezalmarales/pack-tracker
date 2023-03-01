@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -9,11 +10,11 @@ import { v4 as uuid } from 'uuid';
 
 import { CreatePackageDto, UpdatePackageDto } from './dto';
 import { Package, PackStatus } from './entities/package.entity';
-import { FiltersDto, PaginationDto } from 'src/common/dto/pagination.dto';
 import { ConfigService } from '@nestjs/config';
 import { Env } from 'src/config';
 import { startOfDay, endOfDay } from 'date-fns';
 import { MailPackageService } from 'src/mail/services/mail.-package.service';
+import { FiltersPackageDto } from './dto/filters-package.dto';
 
 @Injectable()
 export class PackageService {
@@ -49,35 +50,51 @@ export class PackageService {
     }
   }
 
-  private createAndWhere(filters: FiltersDto) {
-    const { date } = filters;
+  private createAndWhere(filters: FiltersPackageDto) {
+    const { dateGte, dateLte, status, description } = filters;
     const andWhere = {};
 
-    if (date) {
+    if (dateGte) {
+      const end = dateLte || dateGte;
       andWhere['createdAt'] = {
-        $gt: startOfDay(date),
-        $lt: endOfDay(date),
+        $gt: startOfDay(dateGte),
+        $lt: endOfDay(end),
       };
     }
+
+    andWhere['status'] = status ? status : { $ne: PackStatus.Delivered };
+
+    if (description) {
+      // $regex: new RegExp('^' + description.toLowerCase(), 'i'),
+      andWhere['description'] = {
+        $regex: new RegExp(description.toLowerCase()),
+        $options: 'i',
+      };
+    }
+
     return andWhere;
   }
 
-  findAll(filters: FiltersDto) {
-    const { limit = this.defaultLimit, offset = 0, date } = filters;
+  async findAll(filters: FiltersPackageDto) {
+    const { limit = this.defaultLimit, offset = 0 } = filters;
 
     const andWhere = this.createAndWhere(filters);
 
-    const result = this.packageModel
+    const result = await this.packageModel
       .find(andWhere)
       .limit(limit)
       .skip(offset)
-      // .where(andWhere)
       .sort({
         createdAt: -1,
       })
       .select('-__v, -identifier');
 
-    return result;
+    const count = await this.packageModel.find(andWhere).countDocuments();
+
+    return {
+      total: count,
+      items: result,
+    };
   }
 
   async getSatusByIdent(identifier: string) {
@@ -102,67 +119,50 @@ export class PackageService {
       .select('-identifier');
   }
 
-  async upadte(id: string, address: string) {
-    const pack: Package = await this.packageModel.findOne({
-      _id: id,
-    });
-
-    pack.status = PackStatus.Transit;
-    pack.route.push({
-      address,
-      createdAt: new Date(Date.now()),
-    });
-  }
-
   private handleExceptions(error: any) {
     if (error.code === 11000) {
       throw new BadRequestException(
-        `Pokemon exists in db ${JSON.stringify(error?.keyValue)}`,
+        `Package exists in db ${JSON.stringify(error?.keyValue)}`,
       );
     }
 
     // Other server error
     console.log(error);
     throw new InternalServerErrorException(
-      `Can't create Pokemon - Ckeck server logs`,
+      `Can't create Package - Ckeck server logs`,
     );
   }
 
   async update(id: string, updatePackageDto: UpdatePackageDto) {
-    const { finished, address } = updatePackageDto;
+    try {
+      const { finished, address, description } = updatePackageDto;
 
-    if (!status && !address) return false;
+      if (!finished && !address && !description) return false;
 
-    const pack: Package = await this.packageModel.findOne({
-      _id: id,
-    });
+      const pack: Package = await this.packageModel.findOne({
+        _id: id,
+      });
 
-    if (address) {
-      pack.status = PackStatus.Transit;
+      if (pack.status == PackStatus.Delivered)
+        throw new NotFoundException(
+          `The package is blocked by status delivered`,
+        );
+
+      const status = finished ? PackStatus.Delivered : PackStatus.Transit;
+
+      pack.status = status;
       pack.route.push({
         createdAt: new Date(Date.now()),
+        description,
         address,
+        status,
       });
 
       await pack.save();
 
       return true;
+    } catch (error) {
+      throw error;
     }
-
-    if (finished)
-      await this.packageModel.updateOne(
-        {
-          _id: id,
-        },
-        {
-          status: PackStatus.Received,
-        },
-      );
-
-    return true;
   }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} package`;
-  // }
 }

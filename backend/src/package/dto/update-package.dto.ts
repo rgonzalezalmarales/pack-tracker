@@ -12,6 +12,15 @@ export class UpdatePackageDto {
   address?: string;
 
   @ApiProperty({
+    description: 'Descripción del estatus',
+    example: 'Centro Principal ave 40. Los Pinos',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @ApiProperty({
     description: 'Producto entregado',
     example: false,
     required: false,

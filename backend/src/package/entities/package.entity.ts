@@ -9,7 +9,19 @@ export enum PackStatus {
 }
 
 @Schema({ _id: false })
-export class Address {
+export class PackPoint {
+  @Prop({
+    type: String,
+    enum: PackStatus,
+    default: PackStatus.Received,
+  })
+  status: PackStatus;
+
+  @Prop({
+    default: 'Recibido en oficinas de Pack Tracker',
+  })
+  description: string;
+
   @Prop()
   address: string;
 
@@ -53,8 +65,8 @@ export class Package extends Document {
   })
   status: PackStatus;
 
-  @Prop([Address])
-  route: Address[];
+  @Prop([PackPoint])
+  route: PackPoint[];
 
   @ApiProperty({
     description: 'Fecha de creación',

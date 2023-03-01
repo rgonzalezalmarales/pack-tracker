@@ -25,6 +25,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 import { MenuSidenavComponent } from './components/menu-sidenav/menu-sidenav.component';
 import { LayoutComponent } from './components/layout/layout.component';
@@ -69,6 +72,9 @@ import { DateEsPipe } from './pipes/date-es.pipe';
     MatStepperModule,
     MatFormFieldModule,
     MatCheckboxModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSelectModule,
 
     DateEsPipe,
   ],

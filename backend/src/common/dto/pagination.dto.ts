@@ -1,5 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsDate, IsNumber, IsOptional, IsPositive, Min } from 'class-validator';
+import { PackStatus } from 'src/package/entities/package.entity';
 
 export class PaginationDto {
   @ApiProperty({
@@ -20,15 +21,4 @@ export class PaginationDto {
   @IsPositive()
   @Min(1)
   limit: number;
-}
-
-export class FiltersDto extends PartialType(PaginationDto) {
-  @ApiProperty({
-    example: new Date(Date.now()),
-    description: 'Filtrar por fecha',
-    required: false,
-  })
-  @IsOptional()
-  @IsDate()
-  date: Date;
 }

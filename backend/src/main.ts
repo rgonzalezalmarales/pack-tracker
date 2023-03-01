@@ -12,6 +12,9 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.setGlobalPrefix('api');
+
+  app.enableCors();
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -41,7 +44,7 @@ async function bootstrap() {
 
   const port = configService.get(Env.Port);
 
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
   console.log(`App Pack-tracker is running at ${port} port`);
 }

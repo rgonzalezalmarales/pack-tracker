@@ -20,10 +20,10 @@ import {
 import { PackageService } from './package.service';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { Package } from './entities/package.entity';
-import { FiltersDto } from 'src/common/dto/pagination.dto';
 import { ValidRoles } from 'src/auth/interfaces';
 import { Auth } from 'src/auth/decorators';
 import { UpdatePackageDto } from './dto';
+import { FiltersPackageDto } from './dto/filters-package.dto';
 
 @ApiBearerAuth()
 @Auth(ValidRoles.DeliviryMan, ValidRoles.OperationsManager, ValidRoles.Admin)
@@ -49,7 +49,7 @@ export class PackageController {
 
   @Get()
   @ApiResponse({
-    status: HttpStatus.CREATED,
+    status: HttpStatus.OK,
     type: Package,
   })
   @ApiBadRequestResponse({
@@ -58,7 +58,8 @@ export class PackageController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
   })
-  findAll(@Query() filters: FiltersDto) {
+  findAll(@Query() filters: FiltersPackageDto) {
+    console.log(filters);
     return this.packageService.findAll(filters);
   }
 

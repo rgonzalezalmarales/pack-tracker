@@ -1,19 +1,21 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiBasicAuth, ApiTags } from '@nestjs/swagger';
+import { Controller, Post, Body, Get, Query, Param } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
-import { Auth, GetUser, RoleProtected } from './decorators';
-import { CreateUserDto, LoginUserDto } from './dto';
-import { User } from './entities/user.entity';
-import { UserRoleGuard } from './guards/user-role/user-role.guard';
-import { ValidRoles } from './interfaces';
+import { CreateUserDto, LoginUserDto, JwtTokenDto } from './dto';
+// import { Auth, GetUser } from './decorators';
+// import { User } from './entities/user.entity';
 // import {GetUser} from './'
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get(':id/logout')
+  logout(@Param('id') id: string) {
+    return this.authService.logout(id);
+  }
 
   @Post('login')
   loginUser(@Body() loginUserDto: LoginUserDto) {
@@ -25,9 +27,8 @@ export class AuthController {
     return this.authService.create(createUserDto);
   }
 
-  @Get('refresh-token')
-  @Auth()
-  checkAuthStatus(@GetUser() user: User) {
-    return this.authService.checkAuthStatus(user);
+  @Post('refresh-token')
+  checkAuthStatus(@Body() jwt: JwtTokenDto) {
+    return this.authService.checkAuthStatus(jwt);
   }
 }

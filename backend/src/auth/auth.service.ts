@@ -4,15 +4,15 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import * as bcrypt from 'bcrypt';
 
 import { User } from './entities/user.entity';
-import { CreateUserDto, LoginUserDto } from './dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
-import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto, LoginUserDto, JwtTokenDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -34,9 +34,13 @@ export class AuthService {
       delete json.password;
       delete json.__v;
 
+      const token = this.getJwtToken(this.toJwtPayload(user));
+      user.refreshToken = token;
+      await user.save();
+
       return {
         ...json,
-        token: this.getJwtToken(this.toJwtPayload(user)),
+        token,
       };
     } catch (error) {
       this.handleExceptions(error);
@@ -51,30 +55,68 @@ export class AuthService {
       .findOne({
         email,
       })
-      .select('-__v');
-
-    const { password, ...data } = user.toJSON();
+      .select({
+        refreshToken: false,
+        __v: false,
+      });
 
     if (!user)
       throw new UnauthorizedException(`Credentials are not valid (email)`);
 
+    const { password, ...data } = user.toJSON();
+
     if (!bcrypt.compareSync(pass, password))
       throw new UnauthorizedException(`Credentials are not valid (password)`);
 
-    // const json = user.toJSON();
+    const token = this.getJwtToken(this.toJwtPayload(user));
+    user.refreshToken = token;
+    await user.save();
+
     return {
       ...data,
-      token: this.getJwtToken(this.toJwtPayload(user)),
+      token,
     };
     //TODO: Retornar el JWT
   }
 
-  checkAuthStatus(user: User) {
-    const json = user.toJSON();
-    return {
-      ...json,
-      token: this.getJwtToken(this.toJwtPayload(user)),
-    };
+  async logout(id: string) {
+    try {
+      return this.userModel.findByIdAndUpdate(id, {
+        refreshToken: '',
+      });
+    } catch (error) {
+      this.handleExceptions(error);
+    }
+  }
+
+  async checkAuthStatus(jwt: JwtTokenDto) {
+    try {
+      const payload = await this.jwtService.verifyAsync(jwt.token);
+      const user: User = await this.userModel
+        .findOne({
+          _id: payload.id,
+        })
+        .select({
+          password: false,
+          __v: false,
+        });
+
+      const { refreshToken, ...data } = user.toJSON();
+
+      if (jwt.token !== refreshToken)
+        throw new UnauthorizedException(`Token are not valid`);
+
+      const token = this.getJwtToken(this.toJwtPayload(user));
+      user.refreshToken = token;
+      await user.save();
+
+      return {
+        ...data,
+        token,
+      };
+    } catch (error) {
+      throw new UnauthorizedException(`Token are not valid`);
+    }
   }
 
   private toJwtPayload(user: User): JwtPayload {
@@ -99,7 +141,6 @@ export class AuthService {
   }
 
   private getJwtToken(payload: JwtPayload) {
-    // console.log('Payload: ', payload);
     const token = this.jwtService.sign(payload);
     return token;
   }

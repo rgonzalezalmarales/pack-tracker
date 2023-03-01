@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsObject, IsString } from 'class-validator';
-
-import { Address } from '../entities/package.entity';
+import { IsString } from 'class-validator';
 
 export class CreatePackageDto {
   @ApiProperty({
