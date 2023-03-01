@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { LayoutComponent } from './components/layout/layout.component';
+import { CommonModule, DatePipe } from '@angular/common';
+
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
@@ -11,24 +11,27 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
-
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatInputModule } from '@angular/material/input';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
-
 import { MatExpansionModule } from '@angular/material/expansion';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 import { MenuSidenavComponent } from './components/menu-sidenav/menu-sidenav.component';
-import { MessageService } from './services/message.service';
+import { LayoutComponent } from './components/layout/layout.component';
+import { DateEsPipe } from './pipes/date-es.pipe';
 
 @NgModule({
-  declarations: [LayoutComponent, MenuSidenavComponent],
+  declarations: [LayoutComponent, MenuSidenavComponent, DateEsPipe],
   imports: [
     CommonModule,
     MatGridListModule,
@@ -61,7 +64,15 @@ import { MessageService } from './services/message.service';
     FlexLayoutModule,
     MatDialogModule,
     MatExpansionModule,
+
+    ReactiveFormsModule,
+    MatStepperModule,
+    MatFormFieldModule,
+    MatCheckboxModule,
+
+    DateEsPipe,
   ],
+  providers: [DatePipe],
 })
 export class SharedModule {
   static forRoot() {

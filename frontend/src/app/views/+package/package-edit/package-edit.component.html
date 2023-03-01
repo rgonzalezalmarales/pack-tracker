@@ -1,0 +1,63 @@
+<div class="loading-shade" *ngIf="isLoadingResults">
+  <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+</div>
+
+<div
+  style="height: 80vh"
+  fxFlex="100%"
+  fxLayout="row"
+  fxLayoutAlign="center center"
+>
+  <div class="item" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex="30%">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Actualizar estatus del paquete</mat-card-title>
+      </mat-card-header>
+      <form [formGroup]="editFormGroup" (submit)="edit()">
+        <mat-card-content>
+          <mat-form-field class="pack-full-width" appearance="outline">
+            <mat-label>Email destinatario:</mat-label>
+            <input matInput formControlName="addresseeEmail" />
+          </mat-form-field>
+
+          <mat-form-field class="pack-full-width" appearance="outline">
+            <mat-label>Descripción del paquete:</mat-label>
+            <input matInput formControlName="descriptionPack" />
+          </mat-form-field>
+
+          <mat-form-field class="pack-full-width" appearance="outline">
+            <mat-label>Descripción del estatus:</mat-label>
+            <input matInput value="" formControlName="description" />
+          </mat-form-field>
+
+          <mat-form-field class="pack-full-width" appearance="outline">
+            <mat-label>Dirección:</mat-label>
+            <input matInput value="" formControlName="address" />
+          </mat-form-field>
+
+          <section
+            class="pack-section"
+            fxLayout="row"
+            fxLayoutAlign="end center"
+          >
+            <mat-checkbox formControlName="finished">Entregado ?</mat-checkbox>
+          </section>
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button class="btn-edit" mat-raised-button (click)="comeBack()">
+            <mat-icon>undo</mat-icon>
+            <span>Regresar</span>
+          </button>
+          <button
+            type="submit"
+            mat-raised-button
+            class="btn-edit"
+            [disabled]="!editFormGroup.valid"
+          >
+            <mat-icon>add</mat-icon> Actualizar
+          </button>
+        </mat-card-actions>
+      </form>
+    </mat-card>
+  </div>
+</div>

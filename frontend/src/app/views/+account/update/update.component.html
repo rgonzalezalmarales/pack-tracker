@@ -1,0 +1,79 @@
+<div *ngIf="loading">
+  <mat-progress-bar value="indeterminate" color="warn"></mat-progress-bar>
+</div>
+
+<div class="container" fxLayout="row wrap" fxLayoutAlign="center center" style="min-height: 70vh;">
+  <div class="item" fxFlex="46%" fxFlex.xs="98%" fxFlex.lt-md="98%">
+    <form [formGroup]="entityForm" #f="ngForm" (ngSubmit)="onSubmit()" class="form">
+
+      <mat-card class="card mat-elevation-z3" style="border-radius: 6px!important;">
+        <mat-card-header>
+          <mat-card-title>
+            <h2 class="mat-h2">Update Item</h2>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+
+          <div fxLayout="row wrap" fxFlexFill fxLayout.lt-sm="column wrap" fxLayoutGap="2px">
+
+            <mat-form-field fxFlex="49%" fxFlex.xs="100%" fxFlex.lt-md="100%" appearance="outline">
+              <mat-label>Account</mat-label>
+              <input matInput #account type="text" formControlName="account" required>
+              <mat-error>
+                Not empty
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="49%" fxFlex.xs="100%" fxFlex.lt-md="100%" appearance="outline">
+              <mat-label>Departament</mat-label>
+              <input matInput #departament type="text" formControlName="departament" required>
+              <mat-error>
+                Not empty
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="98%" fxFlex.xs="100%" fxFlex.lt-md="100%" appearance="outline">
+              <mat-label>Description</mat-label>
+              <input matInput #description type="text" formControlName="description" required>
+              <mat-error>
+                Not empty
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="49%" fxFlex.xs="100%" fxFlex.lt-md="100%" appearance="outline">
+              <mat-label>Typical Balance</mat-label>
+              <input matInput #typicalBalance type="text" formControlName="typicalBalance" required>
+              <mat-error>
+                Not empty
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="49%" fxFlex.xs="100%" fxFlex.lt-md="100%" appearance="outline">
+              <mat-label>Active Type</mat-label>
+              <input matInput #activeType type="text" formControlName="activeType" required>
+              <mat-error>
+                Not empty
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" type="submit" [disabled]="!entityForm.valid" aria-label="entity">
+            <mat-icon>edit</mat-icon>
+            <span>Update</span>
+          </button>
+
+          <button mat-raised-button color="accent" (click)="remove()" type="button" aria-label="entity">
+            <mat-icon>delete</mat-icon>
+            <span>Delete</span>
+          </button>
+
+          <button type="button" mat-raised-button aria-label="entity" routerLink="">
+            <span>Cancel</span>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </div>
+</div>

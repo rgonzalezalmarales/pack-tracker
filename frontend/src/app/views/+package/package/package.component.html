@@ -1,0 +1,50 @@
+<div class="loading-shade" *ngIf="isLoadingResults">
+  <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+</div>
+
+<div
+  style="height: 80vh"
+  fxFlex="100%"
+  fxLayout="row"
+  fxLayoutAlign="center center"
+>
+  <div class="item" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex="30%">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Agregar paquete</mat-card-title>
+      </mat-card-header>
+      <form [formGroup]="addFormGroup" (submit)="add()">
+        <mat-card-content>
+          <mat-form-field class="pack-full-width" appearance="outline">
+            <mat-label>Email destinatario:</mat-label>
+            <input matInput formControlName="addresseeEmail" />
+          </mat-form-field>
+
+          <mat-form-field class="pack-full-width" appearance="outline">
+            <mat-label>Descripción del paquete:</mat-label>
+            <input matInput formControlName="description" />
+          </mat-form-field>
+
+          <mat-form-field class="pack-full-width" appearance="outline">
+            <mat-label>Dirección Oficina:</mat-label>
+            <input matInput value="" formControlName="address" />
+          </mat-form-field>       
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button class="btn-edit" mat-raised-button (click)="comeBack()">
+            <mat-icon>undo</mat-icon>
+            <span>Regresar</span>
+          </button>
+          <button
+            type="submit"
+            mat-raised-button
+            class="btn-edit"
+            [disabled]="!addFormGroup.valid"
+          >
+            <mat-icon>add</mat-icon> Adicionar
+          </button>
+        </mat-card-actions>
+      </form>
+    </mat-card>
+  </div>
+</div>

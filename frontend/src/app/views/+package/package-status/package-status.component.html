@@ -1,0 +1,79 @@
+<div class="loading-shade" *ngIf="isLoadingResults">
+  <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+</div>
+
+<div
+  class="container"
+  fxFlex="100%"
+  fxLayout="row wrap"
+  fxLayoutAlign="center center"
+  style="min-height: 100vh"
+>
+  <form
+    fxFlex="96%"
+    fxFlex.xs="100%"
+    fxFlex.lt-md="100%"
+    fxLayout="row wrap"
+    fxLayoutAlign="end center"
+    [formGroup]="searchFormGroup"
+    (submit)="search()"
+  >
+    <mat-form-field fxFlex="340px" fxFlex.xs="100%" class="example-full-width">
+      <mat-label>Código:</mat-label>
+      <input matInput value="" formControlName="query" [disabled]="isLink" />
+    </mat-form-field>
+
+    <button
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      type="submit"
+      [disabled]="isLink"
+    >
+      <mat-icon>search</mat-icon>
+    </button>
+  </form>
+
+  <div
+    class="mat-elevation-z0"
+    fxFlex="96%"
+    fxFlex.xs="100%"
+    fxFlex.lt-md="100%"
+    class="table-container"
+  >
+    <mat-stepper
+      fxLayout="column-reverse"
+      orientation="vertical"
+      #stepper
+      isCompleted
+    >
+      <mat-step [completed]="true" *ngFor="let item of getRoute; index as i">
+        <ng-template matStepLabel>{{ getTitle(item) }}</ng-template>
+        <mat-card>
+          <mat-card-header>
+            <div mat-card-avatar [ngClass]="getStatusIcon(item)"></div>
+
+            <mat-card-title>
+              {{ item?.createdAt | dateEs : 'Day' }}
+            </mat-card-title>
+            <mat-card-subtitle>{{
+              item?.createdAt | dateEs : 'medium'
+            }}</mat-card-subtitle>
+
+            <mat-card-title-group
+              style="
+                margin-left: 30px;
+                border-left: 1px solid grey;
+                padding-left: 20px;
+              "
+            >
+              <mat-card-title>{{ getDescription(item) }}</mat-card-title>
+              <mat-card-subtitle>{{ item?.address }}</mat-card-subtitle>
+            </mat-card-title-group>
+          </mat-card-header>
+          <mat-card-content></mat-card-content>
+        </mat-card>
+      </mat-step>
+    </mat-stepper>
+  </div>
+</div>

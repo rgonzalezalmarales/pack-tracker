@@ -1,0 +1,24 @@
+/* Structure */
+table {
+  width: 100%;
+}
+
+.table-container::-webkit-scrollbar {
+  height: 3px;
+  width: 3px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background-color: #6e6e6e;
+  outline: #444 solid 1px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+.rate-limit-reached {
+  max-width: 360px;
+  text-align: center;
+}
