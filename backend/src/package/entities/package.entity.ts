@@ -55,6 +55,9 @@ export class Package extends Document {
   @Prop()
   description: string;
 
+  @Prop()
+  weight: number;
+
   @ApiProperty({
     description: 'Estatus del producto',
   })

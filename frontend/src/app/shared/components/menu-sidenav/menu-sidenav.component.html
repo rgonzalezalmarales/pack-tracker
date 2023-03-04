@@ -1,5 +1,5 @@
 <mat-nav-list class="scrollbar-styled sidenav-min-width" style="width: 100%; height: 90%; overflow: auto;">
-  <ng-template ngFor let-menu [ngForOf]="list" let-i="index">
+  <ng-template ngFor let-menu [ngForOf]="getMenus(list)" let-i="index">
 
     <mat-expansion-panel class="menu-sidebar" [class.mat-elevation-z0]="true" [hideToggle]="!menu.subMenu">
 
@@ -19,7 +19,7 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-template ngFor let-submenu [ngForOf]="menu.subMenu" let-i="index">
+      <ng-template ngFor let-submenu [ngForOf]="getItems(menu.subMenu)" let-i="index">
         <mat-expansion-panel [class.mat-elevation-z0]="true" hideToggle>
           <mat-expansion-panel-header [routerLink]="submenu.link" routerLinkActive="active">
             <mat-panel-title>

@@ -4,14 +4,15 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 import { AuthController } from './auth.controller';
 import { User, UserSchema } from './entities/user.entity';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { Env } from 'src/config';
+import { UserController } from './controllers/user/user.controller';
 
 @Module({
-  controllers: [AuthController],
+  controllers: [AuthController, UserController],
   providers: [AuthService, JwtStrategy],
   imports: [
     ConfigModule,

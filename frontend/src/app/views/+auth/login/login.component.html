@@ -1,7 +1,9 @@
 <div style="height: 100vh" fxLayout="row rap" fxLayoutAlign="center start">
-  
-    <mat-progress-bar *ngIf="loading" mode="indeterminate" color="warn"></mat-progress-bar>
- 
+  <mat-progress-bar
+    *ngIf="loading"
+    mode="indeterminate"
+    color="warn"
+  ></mat-progress-bar>
 
   <div
     style="height: 98vh"
@@ -35,7 +37,7 @@
             <mat-card-header fxLayout="column" fxLayoutAlign="center center">
               <img class="logo" src="./assets/logo.png" alt="logo" />
             </mat-card-header>
-            
+
             <br />
 
             <mat-card-content>
@@ -44,7 +46,7 @@
                 class="full-width username"
                 appearance="outline"
               >
-                <mat-label>Correo o usuario</mat-label>
+                <mat-label>{{ 'views.auth.emailOrUsername' | transloco }}</mat-label>
                 <input
                   matInput
                   #emailOrUsername
@@ -55,11 +57,11 @@
                 <button type="button" mat-icon-button matSuffix>
                   <mat-icon>person</mat-icon>
                 </button>
-                <mat-error> El campo no puede estar vacío </mat-error>
+                <mat-error> {{ 'errors.notEmpty' | transloco }} </mat-error>
               </mat-form-field>
 
               <mat-form-field class="full-width password" appearance="outline">
-                <mat-label>Contraseña</mat-label>
+                <mat-label>{{ 'views.auth.password' | transloco }}</mat-label>
                 <input
                   #password
                   matInput
@@ -82,7 +84,9 @@
                   }}</mat-icon>
                 </button>
 
-                <mat-error> El campo debe tener mínimo 6 caracteres </mat-error>
+                <mat-error>
+                  {{ 'errors.minLength' | transloco : { number: 6 } }}
+                </mat-error>
               </mat-form-field>
             </mat-card-content>
 
@@ -94,7 +98,7 @@
                 [disabled]="!loginForm.valid"
                 aria-label="login"
               >
-                <span>Entrar</span>
+                <span> {{ 'actions.enter' | transloco }}</span>
               </button>
             </mat-card-actions>
           </mat-card>

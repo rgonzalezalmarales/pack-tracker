@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { initialData } from './data/seed-data';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from 'src/auth/services/auth.service';
 // import { AxiosAdapterService } from 'src/common/adapters/axios-adapter.service';
 
 @Injectable()

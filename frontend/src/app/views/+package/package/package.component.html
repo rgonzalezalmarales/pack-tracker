@@ -18,16 +18,25 @@
           <mat-form-field class="pack-full-width" appearance="outline">
             <mat-label>Email destinatario:</mat-label>
             <input matInput formControlName="addresseeEmail" />
+            <mat-error> El campo no puede estar vacío </mat-error>
           </mat-form-field>
 
           <mat-form-field class="pack-full-width" appearance="outline">
             <mat-label>Descripción del paquete:</mat-label>
             <input matInput formControlName="description" />
+            <mat-error> El campo no puede estar vacío </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="pack-full-width" appearance="outline">
+            <mat-label>Peso en Kg:</mat-label>
+            <input matInput formControlName="weight" />
+            <mat-error> El peso se representa con un número positivo</mat-error>
           </mat-form-field>
 
           <mat-form-field class="pack-full-width" appearance="outline">
             <mat-label>Dirección Oficina:</mat-label>
             <input matInput value="" formControlName="address" />
+            <mat-error> El campo no puede estar vacío </mat-error>
           </mat-form-field>       
         </mat-card-content>
         <mat-card-actions align="end">

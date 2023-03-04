@@ -11,8 +11,8 @@
         {{appName}}     
       </mat-toolbar>
 
-      <clarivia-menu-sidenav [list]="menu">
-      </clarivia-menu-sidenav>
+      <app-menu-sidenav [list]="menu" [accountRoles]="userRoles">
+      </app-menu-sidenav>
 
     </mat-sidenav>
 
@@ -21,7 +21,6 @@
         <button type="button" (click)="sidenav.toggle()" aria-label="Toggle sidenav" mat-icon-button>
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
-        <!-- {{appName}} -->
 
         <span class="spacer"></span>
 
@@ -30,17 +29,7 @@
           <span style="font-size: 16px !important;" *ngIf="isLoggedIn$ | async">{{userName}}</span>
           <span style="margin-left: 0.5em;" class="material-icons">account_circle</span>
           <mat-menu #menu="matMenu">
-            <!-- <button mat-menu-item *ngIf="isLoggedIn$ | async" routerLink="auth/change-password">
-              &nbsp;
-              <mat-icon>vpn_key</mat-icon>
-              <span>{{'views.auth.changePassword'}}</span>
-            </button>
-
-            <button mat-menu-item *ngIf="isLoggedIn$ | async" routerLink="auth/profile">
-              <mat-icon>person</mat-icon>
-              <span>{{'views.auth.editProfile'}}</span>
-            </button> -->
-
+           
             <mat-divider></mat-divider>
 
             <button mat-menu-item *ngIf="!(isLoggedIn$ | async)" routerLink="auth/login">

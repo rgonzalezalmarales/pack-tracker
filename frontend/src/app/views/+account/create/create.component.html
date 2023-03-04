@@ -1,0 +1,209 @@
+<div *ngIf="loading">
+  <mat-progress-bar value="indeterminate" color="warn"></mat-progress-bar>
+</div>
+
+<div
+  class="container"
+  fxLayout="row wrap"
+  fxLayoutAlign="center center"
+  style="min-height: 70vh"
+>
+  <div class="item" fxFlex="46%" fxFlex.xs="98%" fxFlex.lt-md="98%">
+    <form [formGroup]="entityForm" (ngSubmit)="onSubmit()" class="form">
+      <mat-card
+        class="card mat-elevation-z3"
+        style="border-radius: 6px !important"
+      >
+        <mat-card-header>
+          <mat-card-title>
+            <h2 class="mat-h2">Crear Cuenta</h2>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div
+            fxLayout="row wrap"
+            fxFlexFill
+            fxLayout.lt-sm="column wrap"
+            fxLayoutGap="2px"
+          >
+            <mat-form-field
+              fxFlex="78%"
+              fxFlex.xs="100%"
+              fxFlex.lt-md="100%"
+              appearance="outline"
+            >
+              <mat-label>Nombre:</mat-label>
+              <input
+                matInput
+                #account
+                type="text"
+                formControlName="fullName"
+                required
+              />
+              <mat-error> El campo no puede estar vacío </mat-error>
+            </mat-form-field>
+
+            <section
+              fxFlex="20%"
+              fxFlex.xs="100%"
+              fxFlex.lt-md="100%"
+              fxLayout="row"
+              fxLayoutAlign="end center"
+              style="height: 60px"
+            >
+              <mat-checkbox formControlName="isActive">Activo</mat-checkbox>
+            </section>
+
+            <mat-form-field
+              fxFlex="78%"
+              fxFlex.xs="100%"
+              fxFlex.lt-md="100%"
+              appearance="outline"
+            >
+              <mat-label>{{ 'entities.User.email' | transloco }} </mat-label>
+              <input
+                matInput
+                #description
+                type="text"
+                formControlName="email"
+                required
+              />
+              <mat-error> {{ 'errors.validEmail' | transloco }} </mat-error>
+            </mat-form-field>
+
+            <mat-form-field
+              fxFlex="98%"
+              fxFlex.xs="100%"
+              fxFlex.lt-md="100%"
+              appearance="outline"
+            >
+              <mat-label>Roles</mat-label>
+              <mat-select formControlName="roles" multiple>
+                <mat-option *ngFor="let role of getAllRoles()" [value]="role">{{
+                  'roles.' + role | transloco
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field
+              class="field"
+              fxFlex="49%"
+              fxFlex.xs="100%"
+              fxFlex.lt-md="100%"
+              appearance="outline"
+            >
+              <mat-label>{{ 'entities.Users.password' | transloco }}</mat-label>
+              <input
+                #password
+                matInput
+                [type]="hide ? 'password' : 'text'"
+                formControlName="password"
+                min="6"
+              />
+              <button
+                type="button"
+                [disabled]="loading"
+                mat-icon-button
+                matSuffix
+                [disabled]="!entityForm.disable"
+                (click)="hide = !hide"
+                [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide"
+              >
+                <mat-icon>{{
+                  hide ? 'visibility_off' : 'visibility'
+                }}</mat-icon>
+              </button>
+              <mat-hint align="end">{{ password.value.length }} / 6</mat-hint>
+
+              <mat-error *ngIf="hasPatterErrorPass">
+                {{ 'errors.matchPassword' | transloco }}
+              </mat-error>
+
+              <mat-error *ngIf="!hasPatterErrorPass">
+                {{ 'errors.minLength' | transloco : { number: 6 } }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field
+              class="field"
+              fxFlex="49%"
+              fxFlex.xs="100%"
+              fxFlex.lt-md="100%"
+              appearance="outline"
+            >
+              <mat-label>{{
+                'entities.Users.confirmPassword' | transloco
+              }}</mat-label>
+              <input
+                #confirmPassword
+                matInput
+                [type]="confirmHide ? 'password' : 'text'"
+                formControlName="confirmPassword"
+                min="6"
+              />
+              <button
+                type="button"
+                [disabled]="loading"
+                mat-icon-button
+                matSuffix
+                [disabled]="!entityForm.disable"
+                (click)="confirmHide = !confirmHide"
+                [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="confirmHide"
+              >
+                <mat-icon>{{
+                  confirmHide ? 'visibility_off' : 'visibility'
+                }}</mat-icon>
+              </button>
+              <mat-hint align="end"
+                >{{ confirmPassword.value.length }} / 6</mat-hint
+              >
+
+              <mat-error *ngIf="hasPatterErrorconfirmPass">
+                {{ 'errors.matchPassword' | transloco }}
+              </mat-error>
+
+              <mat-error *ngIf="!hasPatterErrorconfirmPass">
+                {{ 'errors.minLength' | transloco : { number: 6 } }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-error *ngIf="!matchPasswords && validPasswords">
+              {{ 'errors.passwordsNotMatch' | transloco }}
+            </mat-error>
+
+            <mat-hint
+              style="color: green"
+              *ngIf="matchPasswords && validPasswords"
+            >
+              {{ 'errors.passwordsMatch' | transloco }}
+            </mat-hint>
+          </div>
+        </mat-card-content>
+        <mat-card-actions align="end" style="padding-right: 20px">
+          <button
+            type="button"
+            mat-raised-button
+            aria-label="entity"
+            routerLink="/account"
+          >
+            <mat-icon>undo</mat-icon>
+            <span>Cancel</span>
+          </button>
+
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="!entityForm.valid || !entityForm.dirty"
+            aria-label="entity"
+          >
+            <mat-icon>add</mat-icon>
+            <span>{{ 'actions.add' | transloco }}</span>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </div>
+</div>

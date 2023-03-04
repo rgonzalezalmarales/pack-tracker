@@ -16,6 +16,7 @@ export class PackageEditComponent implements OnInit {
   editFormGroup = this.fb.group({
     addresseeEmail: [''],
     descriptionPack: [''],
+    weight: [0],
     description: ['', Validators.required],
     address: ['', Validators.required],
     finished: [false],
@@ -35,15 +36,28 @@ export class PackageEditComponent implements OnInit {
       this.packageService.getPackage(this.id).subscribe({
         next: (resp) => {
           this.editFormGroup.patchValue({
-            addresseeEmail: resp.addresseeEmail,
-            descriptionPack: resp.description,
+            addresseeEmail: resp?.addresseeEmail,
+            descriptionPack: resp?.description,
+            weight: resp?.weight
           });
 
-          this.editFormGroup.controls['addresseeEmail'].disable();
-          this.editFormGroup.controls['descriptionPack'].disable();
+          this.disableControls(['addresseeEmail', 'descriptionPack', 'weight']);
+        },
+        error: (error) => {
+          this.messageService.showErrorMessage(error);
         },
       });
     }
+  }
+
+  disableControls(names: string[]) {
+    names.forEach((name) => {
+      this.disableControl(name);
+    });
+  }
+
+  disableControl(name: string) {
+    this.editFormGroup.get(name)?.disable();
   }
 
   edit() {

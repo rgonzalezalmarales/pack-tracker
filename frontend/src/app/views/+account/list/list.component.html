@@ -2,65 +2,146 @@
   <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
 </div>
 
-<div class="container" fxFlex="100%" fxLayout="row wrap" fxLayoutAlign="center center" style="min-height: 100vh;">
-
+<div
+  class="container"
+  fxFlex="100%"
+  fxLayout="row wrap"
+  fxLayoutAlign="center center"
+  style="min-height: 100vh"
+>
   <div fxFlex="100%" class="rate-limit-reached" *ngIf="isRateLimitReached">
     Error loading data
   </div>
 
-  <div fxFlex="96%" fxFlex.xs="100%" fxFlex.lt-md="100%" class="mat-elevation-z0" fxLayout="row wrap"
-    fxLayoutAlign="center center">
+  <div
+    fxFlex="96%"
+    fxFlex.xs="100%"
+    fxFlex.lt-md="100%"
+    class="mat-elevation-z0"
+    fxLayout="row wrap"
+    fxLayoutAlign="center center"
+  >
     <mat-accordion fxFlex="100%">
-      <mat-expansion-panel style="margin: 0px;">
-
+      <mat-expansion-panel style="margin: 0px">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            {{'Filter'}}
+            {{ 'actions.operations' | transloco }}
           </mat-panel-title>
-
         </mat-expansion-panel-header>
 
-        <form (ngSubmit)="filter()" fxLayout="row wrap" fxFlex="98%" fxFlex.xs="100%" fxFlex.lt-md="100%"
-          fxLayoutAlign="start center" [formGroup]="filterForm" #f="ngForm" class="form" fxFlex="100%">
+        <div
+          fxLayout="row wrap"
+          fxFlex="100%"
+          fxFlex.xs="100%"
+          fxFlex.lt-md="100%"
+          fxLayoutAlign="end center"
+          style="padding-left: 20px; padding-right: 20px; height: 50px"
+        >
+          <span style="width: 2%"></span>
 
+          <button
+            color="primary"
+            mat-raised-button
+            [routerLink]="['account', 'add']"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel style="margin: 0px">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ 'actions.filter' | transloco }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <form
+          (ngSubmit)="filter()"
+          fxLayout="row wrap"
+          fxFlex="98%"
+          fxFlex.xs="100%"
+          fxFlex.lt-md="100%"
+          fxLayoutAlign="end center"
+          [formGroup]="filterForm"
+          #f="ngForm"
+          class="form"
+          fxFlex="100%"
+          style="padding-left: 20px; padding-right: 20px"
+        >
           <span style="width: 0.2%"></span>
 
-          <mat-form-field fxFlex="20%" fxFlex.xs="100%" fxFlex.lt-md="100%" class="field" appearance="outline">
-            <mat-label>Account</mat-label>
+          <mat-form-field
+            fxFlex="20%"
+            fxFlex.xs="100%"
+            fxFlex.lt-md="100%"
+            class="field"
+            appearance="outline"
+          >
+            <mat-label>{{ 'entities.Users.name' | transloco }}</mat-label>
 
-            <input formControlName="account" matInput placeholder="accounts">
+            <input formControlName="fullName" matInput placeholder="fullName" />
           </mat-form-field>
 
           <span style="width: 0.2%"></span>
 
-          <mat-form-field fxFlex="25%" fxFlex.xs="100%" fxFlex.lt-md="100%" class="field" appearance="outline">
-            <mat-label>Description</mat-label>
+          <mat-form-field
+            fxFlex="25%"
+            fxFlex.xs="100%"
+            fxFlex.lt-md="100%"
+            class="field"
+            appearance="outline"
+          >
+            <mat-label>{{ 'entities.Users.email' | transloco }}</mat-label>
 
-            <input formControlName="description" matInput placeholder="description">
+            <input
+              formControlName="email"
+              matInput
+              placeholder="Correo electrónico"
+            />
           </mat-form-field>
 
           <span style="width: 0.2%"></span>
 
-          <mat-form-field fxFlex="14%" fxFlex.xs="100%" fxFlex.lt-md="100%" class="field" appearance="outline">
-            <mat-label>Departament</mat-label>
+          <!-- <mat-form-field
+            fxFlex="14%"
+            fxFlex.xs="100%"
+            fxFlex.lt-md="100%"
+            class="field"
+            appearance="outline"
+          >
+            <mat-label>Role</mat-label>
 
-            <input formControlName="departament" matInput placeholder="Departament">
-          </mat-form-field>
+            <input formControlName="role" matInput placeholder="role" />
+          </mat-form-field> -->
 
-          <span style="width: 0.2%"></span>
+          <!-- <mat-form-field
+            fxFlex="14%"
+            fxFlex.xs="100%"
+            fxFlex.lt-md="100%"
+            appearance="outline"
+          >
+            <mat-label>Roles</mat-label>
+            <mat-select formControlName="role" multiple>
+              <mat-option *ngFor="let role of getAllRoles()" [value]="role">{{
+                'roles.' + role | transloco
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field> -->
 
-          <mat-form-field fxFlex="14%" fxFlex.xs="100%" fxFlex.lt-md="100%" class="field" appearance="outline">
-            <mat-label>Typical Balance</mat-label>
-
-            <input formControlName="typicalBalance" matInput placeholder="Typical Balance">
-          </mat-form-field>
-
-          <span style="width: 0.2%"></span>
-
-          <mat-form-field fxFlex="14%" fxFlex.xs="100%" fxFlex.lt-md="100%" class="field" appearance="outline">
-            <mat-label>Active type</mat-label>
-
-            <input formControlName="activeType" matInput placeholder="activeType">
+          <mat-form-field
+            fxFlex="14%"
+            fxFlex.xs="100%"
+            fxFlex.lt-md="100%"
+            class="field"
+            appearance="outline"
+          >
+            <mat-label>{{ 'entities.Users.roles' | transloco }}</mat-label>
+            <mat-select formControlName="role">
+              <mat-option *ngFor="let role of getAllRoles" [value]="role">
+                {{ 'roles.' + role | transloco }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
 
           <span style="width: 2%"></span>
@@ -74,71 +155,82 @@
           <button (click)="clear()" type="button" color="" mat-raised-button>
             <mat-icon>clear</mat-icon>
           </button>
-
         </form>
       </mat-expansion-panel>
     </mat-accordion>
-
   </div>
 
-  <div class="mat-elevation-z0" fxFlex="96%" fxFlex.xs="100%" fxFlex.lt-md="100%" class="table-container">
-    <table mat-table [dataSource]="data" matSort matSortActive="account" matSortDisableClear matSortDirection="asc">
-
-      <ng-container matColumnDef="activeType">
-        <mat-header-cell mat-sort-header fxFlex="15%" *matHeaderCellDef>Type Active
+  <div
+    class="mat-elevation-z0"
+    fxFlex="96%"
+    fxFlex.xs="100%"
+    fxFlex.lt-md="100%"
+    class="table-container"
+  >
+    <table
+      mat-table
+      [dataSource]="data"
+      matSort
+      matSortActive="fullName"
+      matSortDisableClear
+      matSortDirection="asc"
+    >
+      <ng-container matColumnDef="fullName">
+        <mat-header-cell mat-sort-header fxFlex="50%" *matHeaderCellDef
+          >{{ 'entities.Users.name' | transloco }}
         </mat-header-cell>
-        <mat-cell fxFlex="15%" *matCellDef="let row">
-          <h3>{{row.activeType}}</h3>
+        <mat-cell fxFlex="50%" *matCellDef="let row">
+          <h3>{{ row.fullName }}</h3>
         </mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="typicalBalance">
-        <mat-header-cell mat-sort-header fxFlex="15%" *matHeaderCellDef>Tipical Balance
-        </mat-header-cell>
-        <mat-cell fxFlex="15%" *matCellDef="let row">
-          <h3>{{row.typicalBalance}}</h3>
-        </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="description">
-        <mat-header-cell mat-sort-header fxFlex="25%" *matHeaderCellDef>Description
-        </mat-header-cell>
-        <mat-cell fxFlex="25%" *matCellDef="let row">
-          <h3>{{row.description}}</h3>
-        </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="departament">
-        <mat-header-cell mat-sort-header fxFlex="15%" *matHeaderCellDef>Departament
-        </mat-header-cell>
-        <mat-cell fxFlex="15%" *matCellDef="let row">
-          <h3>{{row.departament}}</h3>
-        </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="account">
-        <mat-header-cell mat-sort-header fxFlex="20%" *matHeaderCellDef>Account
+      <ng-container matColumnDef="email">
+        <mat-header-cell mat-sort-header fxFlex="20%" *matHeaderCellDef
+          >{{ 'entities.Users.email' | transloco }}
         </mat-header-cell>
         <mat-cell fxFlex="20%" *matCellDef="let row">
-          <h3>{{row.account}}</h3>
+          <h3>{{ row.email }}</h3>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="roles">
+        <mat-header-cell fxFlex="25%" *matHeaderCellDef
+          >{{ 'entities.Users.roles' | transloco }}
+        </mat-header-cell>
+        <mat-cell fxFlex="25%" *matCellDef="let row">
+          <h3>
+            <mat-chip-list aria-label="Roles">
+              <mat-chip *ngFor="let item of getDisplayRoles(row.roles)">{{
+                'roles.' + item | transloco
+              }}</mat-chip>
+            </mat-chip-list>
+          </h3>
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="edit">
-        <mat-header-cell mat-sort-header fxFlex="5%" *matHeaderCellDef>Edit
+        <mat-header-cell fxFlex="5%" *matHeaderCellDef
+          >{{ 'datatable.update' | transloco }}
         </mat-header-cell>
         <mat-cell fxFlex="5%" *matCellDef="let row">
-          <button mat-raised-button color="warn" [routerLink]="['account', row._id, 'update']">
+          <button
+            mat-raised-button
+            color="warn"
+            [routerLink]="['account', row._id, 'update']"
+          >
             <mat-icon>edit</mat-icon>
           </button>
         </mat-cell>
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </table>
-    <mat-paginator [length]="resultsLength" [pageSize]="pageSize" aria-label="Select page">
+    <mat-paginator
+      [length]="resultsLength"
+      [pageSize]="pageSize"
+      aria-label="Select page"
+    >
     </mat-paginator>
   </div>
-
 </div>

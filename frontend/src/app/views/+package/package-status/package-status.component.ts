@@ -1,7 +1,5 @@
 import {
-  AfterViewInit,
   Component,
-  ElementRef,
   OnDestroy,
   OnInit,
   QueryList,
@@ -21,6 +19,8 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { MatStep, MatStepper } from '@angular/material/stepper';
 import { HelperService } from '../services/helper.service';
+import { MessageService } from '@app/shared/services/message.service';
+import { TranslocoService } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-package-status',
@@ -30,6 +30,7 @@ import { HelperService } from '../services/helper.service';
 export class PackageStatusComponent implements OnInit, OnDestroy {
   identifier = '';
   isLink = false;
+  notFound = false;
   pack?: IPackage;
   isLoadingResults = false;
   subscriptions: Subscription[] = [];
@@ -47,8 +48,9 @@ export class PackageStatusComponent implements OnInit, OnDestroy {
     private readonly packageService: PackageService,
     private route: ActivatedRoute,
     private _formBuilder: FormBuilder,
-    private helper: HelperService,
-    private rd: Renderer2
+    private rd: Renderer2,
+    private mesaggeService: MessageService,
+    private transloco: TranslocoService
   ) {}
 
   getStatusIcon(addres: IPackAddress): string {
@@ -63,24 +65,26 @@ export class PackageStatusComponent implements OnInit, OnDestroy {
   }
 
   getTitle(addres: IPackAddress): string {
+    const { status } = addres;
     switch (addres?.status) {
       case PackStatus.Delivered:
-        return this.helper.translateStatus(PackStatus.Delivered);
+        return this.transloco.translate(`entities.Package.status.${status}`);
       default:
         return addres.description;
     }
   }
 
   getDescription(addres: IPackAddress): string {
+    const st = this.transloco.translate(
+      `entities.Package.status.${addres?.status}`
+    );
     switch (addres?.status) {
       case PackStatus.Delivered:
         return 'Entregado';
       case PackStatus.Received:
         return `${addres.description}`;
       default:
-        return `${this.helper.translateStatus(addres.status)}: ${
-          addres.description
-        }`;
+        return `${st}: ${addres.description}`;
     }
   }
 
@@ -91,41 +95,33 @@ export class PackageStatusComponent implements OnInit, OnDestroy {
   isSearching = false;
 
   ngOnInit(): void {
-    // const id = '27399ff4-0e8d-4c58-900f-1865e770e3d1';
     let id = this.route.snapshot.paramMap.get('identifier') || '';
-
-
-
-    console.log({
-      id
-    })
-
-    if (id !== 'package') {
+    if (id) {
       this.identifier = id;
       this.isLink = true;
-      this.loadStatus(this.identifier);
-    } else {
-      id = '27399ff4-0e8d-4c58-900f-1865e770e3d1';
-    }
 
-    this.searchFormGroup.setValue({
-      query: id,
-    });
+      this.searchFormGroup.setValue({
+        query: id,
+      });
+
+      this.searchFormGroup.disable();
+
+      this.loadStatus(this.identifier);
+    }
   }
 
   search() {
-    // if(this.isSearching) return;
     this.identifier = this.searchFormGroup.get('query')?.value || '';
-
-    // this.isSearching = true;
-    console.log(this.identifier);
     this.loadStatus(this.identifier);
   }
 
   loadStatus(identifier: string) {
     if (!identifier) return;
 
+    this.notFound = false;
     this.isLoadingResults = true;
+
+    console.log('stat');
 
     this.subscriptions.push(
       this.packageService.getStatus(this.identifier).subscribe({
@@ -153,8 +149,13 @@ export class PackageStatusComponent implements OnInit, OnDestroy {
             this.stepper.selectedIndex = lastIndex;
           }, 100);
         },
-        error: () => {
+        error: (error: any) => {
           this.isLoadingResults = false;
+          if (error?.includes('not found')) {
+            this.notFound = true;
+          } else {
+            this.mesaggeService.showErrorMessage(error);
+          }
         },
       })
     );

@@ -1,5 +1,4 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { DatePipe } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -7,22 +6,23 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import {
+  BehaviorSubject,
+  map,
+  merge,
+  startWith,
+  Subscription,
+  switchMap,
+} from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { ActivatedRoute } from '@angular/router';
-// import { AccountsGQL } from '@app/graphql/types';
-import {
-  BehaviorSubject,
-  Subscription,
-  merge,
-  startWith,
-  switchMap,
-  catchError,
-  map,
-  of as observableOf,
-} from 'rxjs';
+
+import { Role } from '../interfaces/acount.interface';
+import { AccountService } from '../services/account.service';
+import { MessageService } from '@app/shared/services/message.service';
+import { HelperService } from '../services/helper.service';
 
 @Component({
   selector: 'app-list',
@@ -32,14 +32,7 @@ import {
 export class ListComponent implements OnInit, AfterViewInit, OnDestroy {
   filterForm: FormGroup | any;
 
-  displayedColumns: string[] = [
-    'account',
-    'description',
-    'departament',
-    'typicalBalance',
-    'activeType',
-    'edit',
-  ];
+  displayedColumns: string[] = ['fullName', 'email', 'roles', 'edit'];
 
   data: any[] = [];
   pageSize = 10;
@@ -58,18 +51,18 @@ export class ListComponent implements OnInit, AfterViewInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
   constructor(
-    // private accountsGQL: AccountsGQL,
+    private accountService: AccountService,
     public dialog: MatDialog,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private messageService: MessageService,
+    private helper: HelperService
   ) {}
 
   ngOnInit(): void {
     this.filterForm = this.formBuilder.group({
-      description: [],
-      account: [],
-      departament: [],
-      typicalBalance: [],
-      activeType: [],
+      fullName: [],
+      role: [],
+      email: ['', [Validators.email]],
     });
   }
 
@@ -82,57 +75,64 @@ export class ListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.filter$.next(true);
   }
 
+  get getAllRoles(): Role[] {
+    return this.helper.getRoles();
+  }
+
+  getDisplayRoles(roles: Role[]) {
+    if (roles.length > 2) {
+      const [first, second] = roles;
+      return [first, second, 'more'];
+    }
+
+    return roles || [];
+  }
+
   ngAfterViewInit() {
     // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
 
     this.filter$.subscribe(() => (this.paginator.pageIndex = 0));
 
-    // this.subscriptions.push(
-    //   merge(this.sort.sortChange, this.paginator.page, this.filter$)
-    //     .pipe(
-    //       startWith({}),
-    //       switchMap(() => {
-    //         this.isLoadingResults = true;
-    //         this.selection.clear();
+    this.subscriptions.push(
+      merge(this.sort.sortChange, this.paginator.page, this.filter$)
+        .pipe(
+          startWith({}),
+          switchMap(() => {
+            this.isLoadingResults = true;
+            this.selection.clear();
 
-    //         let sort = '';
-    //         if (this.sort.direction === 'asc') {
-    //           sort = '-';
-    //         }
+            let sort = this.sort.direction === 'asc' ? '-' : '';
+            sort += this.sort.active;
 
-    //         // return this.accountsGQL
-    //         //   .fetch(
-    //         //     {
-    //         //       limit: this.pageSize,
-    //         //       skip: this.paginator.pageIndex * this.pageSize,
-    //         //       sorts: `${sort}${this.sort.active}`,
-    //         //       filters: this.buildFilter(),
-    //         //     },
-    //         //     {
-    //         //       fetchPolicy: 'network-only',
-    //         //     }
-    //         //   )
-    //         //   .pipe(catchError(() => observableOf(null)));
-    //       }),
-    //       map((data) => {
-    //         // Flip flag to show that loading has finished.
-    //         this.isLoadingResults = false;
-    //         this.isRateLimitReached = data === null;
+            const filters = this.buildFilter();
 
-    //         if (data === null) {
-    //           return [];
-    //         }
+            return this.accountService.getUsers({
+              sort,
+              limit: this.paginator.pageSize,
+              offset: this.paginator.pageIndex * this.paginator.pageSize,
+              ...filters,
+            });
+          })
+        )
+        .pipe(
+          map((data) => {
+            this.resultsLength = data?.total || 0;
+            this.isLoadingResults = false;
 
-    //         // Only refresh the result length if there is new data. In case of rate
-    //         // limit errors, we do not want to reset the paginator to zero, as that
-    //         // would prevent users from re-triggering requests.
-    //         this.resultsLength = data.data.Accounts.total;
-    //         return data.data.Accounts.items;
-    //       })
-    //     )
-    //     .subscribe((data) => (this.data = data))
-    // );
+            return data?.items || [];
+          })
+        )
+        .subscribe({
+          next: (data) => {
+            this.data = data;
+          },
+          error: (error) => {
+            this.isLoadingResults = false;
+            this.messageService.showErrorMessage(error);
+          },
+        })
+    );
   }
 
   ngOnDestroy(): void {
@@ -142,43 +142,20 @@ export class ListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private buildFilter(): any {
-    const filters: any = {
-      contains: [],
-    };
+    const filters: any = {};
 
-    if (this.filterForm.get('account').value) {
-      filters['contains'].push({
-        field: 'account',
-        value: this.filterForm.get('account').value,
-      });
+    const { fullName, email, role } = this.filterForm.value;
+
+    if (fullName) {
+      filters['fullName'] = fullName;
     }
 
-    if (this.filterForm.get('description').value) {
-      filters['contains'].push({
-        field: 'description',
-        value: this.filterForm.get('description').value,
-      });
+    if (email) {
+      filters['email'] = email;
     }
 
-    if (this.filterForm.get('departament').value) {
-      filters['contains'].push({
-        field: 'departament',
-        value: this.filterForm.get('departament').value,
-      });
-    }
-
-    if (this.filterForm.get('typicalBalance').value) {
-      filters['contains'].push({
-        field: 'typicalBalance',
-        value: this.filterForm.get('typicalBalance').value,
-      });
-    }
-
-    if (this.filterForm.get('activeType').value) {
-      filters['contains'].push({
-        field: 'activeType',
-        value: this.filterForm.get('activeType').value,
-      });
+    if (role) {
+      filters['role'] = role;
     }
 
     return filters;

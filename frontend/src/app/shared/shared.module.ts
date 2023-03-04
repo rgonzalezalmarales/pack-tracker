@@ -28,6 +28,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
+
+import { TranslocoModule } from '@ngneat/transloco';
 
 import { MenuSidenavComponent } from './components/menu-sidenav/menu-sidenav.component';
 import { LayoutComponent } from './components/layout/layout.component';
@@ -50,6 +53,8 @@ import { DateEsPipe } from './pipes/date-es.pipe';
     MatToolbarModule,
     MatSidenavModule,
     MatExpansionModule,
+
+    TranslocoModule,
   ],
   exports: [
     LayoutComponent,
@@ -75,6 +80,9 @@ import { DateEsPipe } from './pipes/date-es.pipe';
     MatDatepickerModule,
     MatNativeDateModule,
     MatSelectModule,
+    MatChipsModule,
+
+    TranslocoModule,
 
     DateEsPipe,
   ],

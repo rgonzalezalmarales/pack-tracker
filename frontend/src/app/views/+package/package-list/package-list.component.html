@@ -25,7 +25,7 @@
       <mat-expansion-panel style="margin: 0px">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            {{ 'Operaciones' }}
+            {{ 'actions.operations' | transloco }}
           </mat-panel-title>
         </mat-expansion-panel-header>
 
@@ -39,13 +39,19 @@
         >
           <span style="width: 2%"></span>
 
-          <button color="primary" mat-raised-button routerLink="/package/add">
+          <button
+            [disabled]="isDisabledEdit"
+            color="primary"
+            mat-raised-button
+            routerLink="/package/add"
+          >
             <mat-icon>add</mat-icon>
           </button>
 
           <span style="width: 0.2%"></span>
 
           <button
+            [disabled]="isDisabledCsv"
             color="primary"
             type="button"
             mat-raised-button
@@ -59,7 +65,7 @@
       <mat-expansion-panel style="margin: 0px">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            {{ 'Filtros' }}
+            {{ 'actions.filter' | transloco }}
           </mat-panel-title>
         </mat-expansion-panel-header>
 
@@ -124,13 +130,10 @@
             class="field"
             appearance="outline"
           >
-            <mat-label>Estatus</mat-label>
+            <mat-label>{{ 'views.package.status' | transloco }}</mat-label>
             <mat-select formControlName="status">
-              <mat-option
-                *ngFor="let status of getStatus"
-                [value]="status?.value"
-              >
-                {{ status?.label }}
+              <mat-option *ngFor="let status of getStatus" [value]="status">
+                {{ 'entities.Package.status.' + status | transloco }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -162,35 +165,61 @@
       mat-table
       [dataSource]="data"
       matSort
-      matSortActive="account"
+      matSortActive="createdAt"
       matSortDisableClear
       matSortDirection="asc"
       class="table-package"
     >
       <ng-container matColumnDef="description">
-        <mat-header-cell mat-sort-header fxFlex="75%" *matHeaderCellDef
-          >Description
+        <mat-header-cell mat-sort-header fxFlex="85%" *matHeaderCellDef
+          >Descripción
         </mat-header-cell>
-        <mat-cell fxFlex="75%" *matCellDef="let row">
-          <h3>{{ row.description }}</h3>
+        <mat-cell fxFlex="85%" *matCellDef="let row">
+          <h3>{{ row?.description }}</h3>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <mat-header-cell mat-sort-header fxFlex="10%" *matHeaderCellDef
+          >Fecha de creación
+        </mat-header-cell>
+        <mat-cell fxFlex="10%" *matCellDef="let row">
+          <h3>{{ row?.createdAt | date : 'dd/MM/yyyy' }}</h3>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="weight">
+        <mat-header-cell mat-sort-header fxFlex="10%" *matHeaderCellDef
+          >Peso (kg)
+        </mat-header-cell>
+        <mat-cell fxFlex="10%" *matCellDef="let row">
+          <h3>{{ row?.weight || 0 }} kg</h3>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="addresseeEmail">
+        <mat-header-cell mat-sort-header fxFlex="20%" *matHeaderCellDef
+          >Propietario
+        </mat-header-cell>
+        <mat-cell fxFlex="20%" *matCellDef="let row">
+          <h3>{{ row?.addresseeEmail }}</h3>
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <mat-header-cell mat-sort-header fxFlex="20%" *matHeaderCellDef
-          >Estatus
+        <mat-header-cell mat-sort-header fxFlex="10%" *matHeaderCellDef
+          >{{ 'views.package.status' | transloco }}
         </mat-header-cell>
-        <mat-cell fxFlex="20%" *matCellDef="let row">
-          <h3>{{ translateSt(row.status) }}</h3>
+        <mat-cell fxFlex="10%" *matCellDef="let row">
+          <h3>{{ 'entities.Package.status.' + row?.status | transloco }}</h3>
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="edit">
-        <mat-header-cell mat-sort-header fxFlex="5%" *matHeaderCellDef
-          >Edit
-        </mat-header-cell>
+        <mat-header-cell fxFlex="5%" *matHeaderCellDef>Editar </mat-header-cell>
         <mat-cell fxFlex="5%" *matCellDef="let row">
           <button
+            [disabled]="isDisabledEdit"
             mat-raised-button
             color="warn"
             [routerLink]="['package', row._id, 'update']"

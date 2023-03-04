@@ -41,6 +41,7 @@
     fxFlex.lt-md="100%"
     class="table-container"
   >
+    <mat-error *ngIf="notFound">Lo sentimos, no pudimos encontrar un paquete con el identificador único otorgado, por favor diríjase a las oficinas de Pack Tracker.</mat-error>
     <mat-stepper
       fxLayout="column-reverse"
       orientation="vertical"

@@ -11,6 +11,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiNotFoundResponse,
   ApiParam,
   ApiResponse,
   ApiTags,
@@ -25,13 +26,13 @@ import { Auth } from 'src/auth/decorators';
 import { UpdatePackageDto } from './dto';
 import { FiltersPackageDto } from './dto/filters-package.dto';
 
-@ApiBearerAuth()
-@Auth(ValidRoles.DeliviryMan, ValidRoles.OperationsManager, ValidRoles.Admin)
 @ApiTags('Paquetes')
 @Controller('package')
 export class PackageController {
   constructor(private readonly packageService: PackageService) {}
 
+  @ApiBearerAuth()
+  @Auth(ValidRoles.DeliviryMan)
   @Post()
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -47,10 +48,12 @@ export class PackageController {
     return this.packageService.create(createPackageDto);
   }
 
+  @Auth(ValidRoles.DeliviryMan, ValidRoles.OperationsManager)
+  @ApiBearerAuth()
   @Get()
   @ApiResponse({
     status: HttpStatus.OK,
-    type: Package,
+    type: [Package],
   })
   @ApiBadRequestResponse({
     description: 'Bad Request',
@@ -59,11 +62,9 @@ export class PackageController {
     description: 'Unauthorized',
   })
   findAll(@Query() filters: FiltersPackageDto) {
-    console.log(filters);
     return this.packageService.findAll(filters);
   }
 
-  @Get(':identifier/status')
   @ApiResponse({
     status: HttpStatus.OK,
     description:
@@ -76,6 +77,9 @@ export class PackageController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
   })
+  @ApiNotFoundResponse({
+    description: 'Not found identiefier',
+  })
   @ApiParam({
     name: 'identifier',
     example: '097497c8-3443-4547-b931-52e8897d2098',
@@ -86,18 +90,43 @@ export class PackageController {
     return this.packageService.getSatusByIdent(identifier);
   }
 
+  @ApiBearerAuth()
+  @Auth(ValidRoles.DeliviryMan)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: Package,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+  })
+  @ApiNotFoundResponse({
+    description: 'Package not found',
+  })
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.packageService.findOne(id);
   }
 
+  @ApiBearerAuth()
+  @Auth(ValidRoles.DeliviryMan)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: Package,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+  })
+  @ApiNotFoundResponse({
+    description: 'Package not found',
+  })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePackageDto: UpdatePackageDto) {
     return this.packageService.update(id, updatePackageDto);
   }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.packageService.remove(+id);
-  // }
 }

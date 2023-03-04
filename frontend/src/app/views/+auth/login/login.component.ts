@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '@app/core/services/auth.service';
 import { MessageService } from '@app/shared/services/message.service';
 import { Subscription } from 'rxjs';
+import { Role } from '../../+account/interfaces/acount.interface';
 
 @Component({
   selector: 'app-login',
@@ -53,9 +54,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.authService.login(email, password).subscribe({
-        next: (data) => {
-          // console.log('data, ', data);
-          console.log('navigate login', this.returnUrl);
+        next: () => {
+          if (this.authService.userValue?.roles?.includes(Role.Admin))
+            this.returnUrl = 'account';
+            
           this.router.navigate([this.returnUrl]);
         },
         error: (error) => {

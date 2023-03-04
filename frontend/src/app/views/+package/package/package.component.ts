@@ -14,6 +14,10 @@ export class PackageComponent implements OnInit {
   addFormGroup = this.fb.group({
     addresseeEmail: ['', [Validators.required, Validators.email]],
     description: ['', Validators.required],
+    weight: [
+      0,
+      [Validators.min(0.0000000000000000000001), Validators.required],
+    ],
     address: ['', Validators.required],
   });
 

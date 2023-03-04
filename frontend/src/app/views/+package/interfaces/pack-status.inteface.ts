@@ -3,12 +3,12 @@ export interface IPagPacks {
   total: number;
 }
 
-
 export interface IPackage {
   identifier: string;
   addresseeEmail: string;
   description: string;
   status: string;
+  weight: number;
   route: IPackAddress[];
 }
 

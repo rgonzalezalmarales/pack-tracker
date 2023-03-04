@@ -1,61 +1,10 @@
-// import { ApiProperty, PartialType } from '@nestjs/swagger';
-// import { IsDate, IsOptional } from 'class-validator';
-
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsDate, IsOptional, IsString } from 'class-validator';
+
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { PackStatus } from '../entities/package.entity';
 
-// import { PaginationDto } from 'src/common/dto/pagination.dto';
-
-// export class PackFiltersDto extends PartialType(PaginationDto) {
-//   @ApiProperty({
-//     example: new Date(Date.now()),
-//     description: 'Filtrar por fecha',
-//     required: false,
-//   })
-//   @IsOptional()
-//   @IsDate()
-//   date: Date;
-
-//   @ApiProperty({
-//     example: new Date(Date.now()),
-//     description: 'Fecha mayor o igual',
-//     required: false,
-//   })
-//   @IsOptional()
-//   @IsDate()
-//   dateGte: Date;
-
-//   @ApiProperty({
-//     example: new Date(Date.now()),
-//     description: 'Fecha menor o igual',
-//     required: false,
-//   })
-//   @IsOptional()
-//   @IsDate()
-//   dateLte: Date;
-
-//   // @ApiProperty({
-//   //   example: new Date(Date.now()),
-//   //   description: 'Fecha menor o igual',
-//   //   required: false,
-//   // })
-//   // @IsOptional()
-//   // @IsDate()
-//   // status: PackStatus;
-// }
-
 export class FiltersPackageDto extends PartialType(PaginationDto) {
-  // // @ApiProperty({
-  // //   example: new Date(Date.now()),
-  // //   description: 'Filtrar por fecha',
-  // //   required: false,
-  // // })
-  // // @IsOptional()
-  // // @IsDate()
-  // date: Date;
-
   @ApiProperty({
     example: new Date(Date.now()),
     description: 'Fecha mayor o igual',

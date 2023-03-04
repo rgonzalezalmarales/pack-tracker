@@ -10,16 +10,25 @@ import { Model } from 'mongoose';
 
 import * as bcrypt from 'bcrypt';
 
-import { User } from './entities/user.entity';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
-import { CreateUserDto, LoginUserDto, JwtTokenDto } from './dto';
+import { User } from '../entities/user.entity';
+import { JwtPayload } from '../interfaces/jwt-payload.interface';
+import { CreateUserDto, LoginUserDto, JwtTokenDto } from '../dto';
+import { FiltersUserDto } from '../dto/filters-user-dto';
+import { ConfigService } from '@nestjs/config';
+import { Env } from 'src/config';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { id } from 'date-fns/locale';
 
 @Injectable()
 export class AuthService {
+  private defaultLimit: number;
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>, // configService: ConfigService,
     private readonly jwtService: JwtService,
-  ) {}
+    configService: ConfigService,
+  ) {
+    this.defaultLimit = configService.get<number>(Env.DefaultLimit);
+  }
 
   async create(createUserDto: CreateUserDto) {
     try {
@@ -42,6 +51,65 @@ export class AuthService {
         ...json,
         token,
       };
+    } catch (error) {
+      this.handleExceptions(error);
+    }
+  }
+
+  private createAndWhere(filters: FiltersUserDto) {
+    const { email, fullName, active, role } = filters;
+    const andWhere = {};
+
+    if (email) {
+      andWhere['email'] = email;
+    }
+
+    if (fullName) {
+      andWhere['fullName'] = {
+        $regex: new RegExp(fullName.toLowerCase()),
+        $options: 'i',
+      };
+    }
+
+    if (role) {
+      andWhere['roles'] = { $in: [role] };
+    }
+
+    if (typeof active === 'boolean') {
+      andWhere['isActive'] = active;
+    }
+
+    return andWhere;
+  }
+
+  async findAll(filters: FiltersUserDto) {
+    const { limit = this.defaultLimit, offset = 0, sort } = filters;
+
+    const andWhere = this.createAndWhere(filters);
+    const andSort = sort || '-createdAt';
+
+    const result = await this.userModel
+      .find(andWhere)
+      .limit(limit)
+      .skip(offset)
+      .sort(andSort)
+      .select('-__v, -password');
+
+    const count = await this.userModel.find(andWhere).countDocuments();
+
+    return {
+      total: count,
+      items: result,
+    };
+  }
+
+  findOne(id: string) {
+    try {
+      return this.userModel
+        .findOne({
+          _id: id,
+        })
+        .select('-password');
     } catch (error) {
       this.handleExceptions(error);
     }
@@ -149,6 +217,17 @@ export class AuthService {
     this.userModel.insertMany(users);
   }
 
+  async deleteById(userId: string) {
+    if (!userId.length) return false;
+
+    try {
+      await this.userModel.findByIdAndDelete(userId);
+      return true;
+    } catch (error) {
+      this.handleExceptions(error);
+    }
+  }
+
   async deleteManyById(userId: string[] = []) {
     if (!!userId.length) {
       try {
@@ -166,6 +245,40 @@ export class AuthService {
       return true;
     } catch (error) {
       this.handleExceptions(error);
+    }
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    try {
+      if (updateUserDto?.password) {
+        updateUserDto.password = bcrypt.hashSync(updateUserDto.password, 10);
+      }
+      const { email, fullName, roles, isActive, password } = updateUserDto;
+
+      if (
+        !email &&
+        !fullName &&
+        !roles?.length &&
+        !password &&
+        typeof isActive !== 'boolean'
+      )
+        return false;
+
+      try {
+        const doc = await this.userModel.findByIdAndUpdate(id, {
+          ...updateUserDto,
+          updatedAt: new Date(Date.now()),
+        });
+        const userDB = doc.toJSON();
+        delete userDB.password;
+        delete userDB.__v;
+
+        return { ...userDB, ...updateUserDto };
+      } catch (error) {
+        this.handleExceptions(error);
+      }
+    } catch (error) {
+      throw error;
     }
   }
 }

@@ -1,6 +1,11 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsDate, IsNumber, IsOptional, IsPositive, Min } from 'class-validator';
-import { PackStatus } from 'src/package/entities/package.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  Min,
+} from 'class-validator';
 
 export class PaginationDto {
   @ApiProperty({
@@ -21,4 +26,13 @@ export class PaginationDto {
   @IsPositive()
   @Min(1)
   limit: number;
+
+  @ApiProperty({
+    example: '-createdAt',
+    description: 'Campo para orden, el signo (-) significa es ASC',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  sort: string;
 }

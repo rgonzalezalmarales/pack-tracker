@@ -26,13 +26,20 @@
           </mat-form-field>
 
           <mat-form-field class="pack-full-width" appearance="outline">
+            <mat-label>Peso (kg):</mat-label>
+            <input matInput formControlName="weight" />
+          </mat-form-field>          
+
+          <mat-form-field class="pack-full-width" appearance="outline">
             <mat-label>Descripción del estatus:</mat-label>
             <input matInput value="" formControlName="description" />
+            <mat-error> El campo no puede estar vacío </mat-error>
           </mat-form-field>
 
           <mat-form-field class="pack-full-width" appearance="outline">
             <mat-label>Dirección:</mat-label>
             <input matInput value="" formControlName="address" />
+            <mat-error> El campo no puede estar vacío </mat-error>
           </mat-form-field>
 
           <section
@@ -54,7 +61,7 @@
             class="btn-edit"
             [disabled]="!editFormGroup.valid"
           >
-            <mat-icon>add</mat-icon> Actualizar
+            <mat-icon>edit</mat-icon> Actualizar
           </button>
         </mat-card-actions>
       </form>

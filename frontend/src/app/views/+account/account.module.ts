@@ -7,6 +7,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { UpdateComponent } from './update/update.component';
 import { UploadComponent } from './upload/upload.component';
 import { AuthGuard } from '@app/core/guards/auth.guard';
+import { CreateComponent } from './create/create.component';
+import { Role } from './interfaces/acount.interface';
 
 const routes: Routes = [
   {
@@ -14,32 +16,32 @@ const routes: Routes = [
     component: ListComponent,
     title: 'Usuarios',
     data: {
-      expectedRole: ['Admin'],
+      expectedRole: [Role.Admin],
     },
     canActivate: [AuthGuard],
   },
-  // {
-  //   path: 'account/:id/update',
-  //   component: UpdateComponent,
-  //   title: 'Update account',
-  //   data: {
-  //     expectedRole: ['Admin'],
-  //   },
-  //   canActivate: [AuthGuard],
-  // },
-  // {
-  //   path: 'account/upload',
-  //   component: UploadComponent,
-  //   title: 'Upload excel',
-  //   data: {
-  //     expectedRole: ['Admin'],
-  //   },
-  //   canActivate: [AuthGuard],
-  // },
+  {
+    path: 'account/:id/update',
+    component: UpdateComponent,
+    title: 'Update account',
+    data: {
+      expectedRole: [Role.Admin],
+    },
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'account/add',
+    component: CreateComponent,
+    title: 'Create account',
+    data: {
+      expectedRole: [Role.Admin],
+    },
+    canActivate: [AuthGuard],
+  },
 ];
 
 @NgModule({
-  declarations: [ListComponent, UpdateComponent, UploadComponent],
+  declarations: [ListComponent, UpdateComponent, UploadComponent, CreateComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,

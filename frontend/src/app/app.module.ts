@@ -9,6 +9,7 @@ import { CoreModule } from '@angular/flex-layout';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+import { TranslocoRootModule } from './transloco/transloco-root.module';
 
 const routes: Routes = [
   {
@@ -46,14 +47,9 @@ const routes: Routes = [
       scrollPositionRestoration: 'top',
     }),
     HttpClientModule,
+    TranslocoRootModule
   ],
   providers: [
-    // {
-    //   provide: APP_INITIALIZER,
-    //   useFactory: appInitializer,
-    //   multi: true,
-    //   deps: [AuthService],
-    // },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],

@@ -1,0 +1,191 @@
+{
+  "appName": "tablero",
+  "settings": {
+    "title": "Configuración"
+  },
+  "true": "Verdadero",
+  "false": "Falso",
+  "date": {
+    "days": {
+      "Monday": "Lunes",
+      "Tuesday": "Martes",
+      "Wednesday": "Miércoles",
+      "Thursday": "Jueves",
+      "Friday": "Viernes",
+      "Saturday": "Sábado",
+      "Sunday": "Domingo"
+    },
+    "months": {
+      "January": "Enero",
+      "February": "Febrero",
+      "March": "Marzo",
+      "April": "Abril",
+      "May": "Mayo",
+      "June": "Junio",
+      "July": "Julio",
+      "August": "Agosto",
+      "September": "Septiembre",
+      "October": "Octubre",
+      "November": "Noviembre",
+      "December": "Diciembre"
+    }
+  },
+  "actions": {
+    "enter": "Entrar",
+    "cancel": "Cancelar",
+    "create": "Crear",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "add": "Adicionar",
+    "deleteAll": "Eliminar todos",
+    "update": "Actualizar",
+    "details": "Detalles",
+    "change": "Cambiar",
+    "changePassword": "Desea cambiar contraseña",
+    "report": "Generar reporte",
+    "download": "Descargar",
+    "filter": "Filtros",
+    "operations": "Operaciones",
+    "clear": "Limpiar",
+    "next": "Siguiente",
+    "back": "Atrás",
+    "search": "Buscar",
+    "success": "Operación realizada",
+    "takePhoto": "Se ha tomado una instantania de las gráficas",
+    "synchronizeData": "Sincronizando datos"
+  },
+  "errors": {
+    "notEmpty": "El campo no puede estar vacío",
+    "notEmptyOrSameName": "El campo no puede estar vacío o no puede coincidir",
+    "validEmail": "El campo debe ser un correo electrónico válido",
+    "validUrl": "El campo debe ser una URL válida",
+    "minLength": "El campo debe tener mínimo {{number}} caracteres",
+    "matchPassword": "La contraseña debe tener mayúsculas, minúsculas y números",
+    "networkError": "Error de red",
+    "expireSession": "Su sesión expiró",
+    "invalidPermission": "No tiene permisos",
+    "passwordsNotMatch": "Contraseñas no coinciden",
+    "passwordsMatch": "Contraseñas coinciden",
+    "invalidOldPassword": "Contraseña anterior es incorrecta",
+    "invalidProfile": "Perfil incorrecto",
+    "validYear": "Selecciona al menos un año",
+    "invalidYearForm": "Selecciona años diferentes",
+    "invalidForm": "Formulario no válido"
+  },
+  "messages": {
+    "itemAdded": "Elemento adicionado",
+    "itemDeleted": "Elemento eliminado",
+    "itemUpdated": "Elemento actualizado",
+    "changePassword": "La contraseña ha sido cambiada",
+    "emailSent": "Correo electrónico enviado",
+    "profileUpdated": "Perfil actualizado"
+  },
+  "datatable": {
+    "notFoundItems": "No se encontraron items",
+    "details": "Detalles",
+    "add": "Adicionar",
+    "delete": "Eliminar",
+    "filterAndOperations": "Filtros y Operaciones",
+    "deleteAll": "Eliminar todos",
+    "update": "Actualizar",
+    "additional": "Adicionales",
+    "changePassword": "Cambiar contraseña",
+    "addExtraData": "Datos Colocación",
+    "clear": "Limpiar",
+    "search": "Buscar",
+    "actions": "Acciones",
+    "itemsPerPageLabel": "Filas",
+    "nextPageLabel": "Página siguiente",
+    "previousPageLabel": "Página anterior",
+    "deleteDialog": {
+      "title": "¿Eliminar elemento?",
+      "text": "¿Estás seguro de eliminar este elemento?"
+    },
+    "deleteAllDialog": {
+      "text": "¿Estás seguro de eliminar estos elemento?"
+    }
+  },
+  "views": {
+    "dashboard": {
+      "title": "Tablero"
+    },
+    "admin": {
+      "title": "GESTIÓN",
+      "user": {
+        "title": "Gestión de Usuarios",
+        "users": "Usuarios",
+        "create": "Crear Usuario",
+        "update": "Actualizar Usuario",
+        "details": "Detalles Usuario"
+      }
+    },
+    "about": {
+      "title": "Acerca de"
+    },
+    "auth": {
+      "login": "Iniciar sesión",
+      "title": "Unifin by Clarivia",
+      "logout": "Cerrar sesión",
+      "emailOrUsername": "Correo o usuario",
+      "password": "Contraseña",
+      "changePassword": "Cambiar contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "editProfile": "Editar perfil",
+      "logoutMessage": "Usted a cerrado su sesión",
+      "profile": {
+        "title": "Perfil",
+        "personalData": "Datos Personales",
+        "next": "Siguiente",
+        "back": "Atrás",
+        "done": "Hecho",
+        "message": "Actualizar perfil",
+        "welcomeMessage": "Estimado usuario, complete la información de su empresa antes de continuar",
+        "completeAllRequiredField": "Complete todos los campos requeridos"
+      }
+    },
+    "package": {
+      "status": "Estatus"
+    }
+  },
+  "entities": {
+    "Users": {
+      "email": "Correo electrónico",
+      "name": "Nombre",
+      "lastname": "Apellidos",
+      "banned": "Baneado",
+      "createdAt": "Fecha de ingreso",
+      "username": "Usuario",
+      "password": "Contraseña",
+      "newPassword": "Nueva contraseña",
+      "oldPassword": "Contraseña vieja",
+      "confirmPassword": "Confirmar Contraseña",
+      "roles": "Roles"
+    },
+    "Package": {
+      "status": {
+        "Delivered": "Entregado",
+        "Received": "Recibido",
+        "Transit": "Tránsito"
+      }
+    },
+    "changePassword": "Cambiar contraseña"
+  },
+  "roles": {
+    "Admin": "Admin",
+    "OperationsManager": "Gerente de Operaciones",
+    "DeliviryMan": "Repartidor",
+    "Receiver": "Receptor",
+    "more": "..."
+  },
+  "notifications": {
+    "title": "Notificaciones"
+  },
+  "countries": {
+    "mx": "México",
+    "cu": "Cuba"
+  },
+  "modules": {
+    "admin": "Admin",
+    "auth": "Auth"
+  }
+}

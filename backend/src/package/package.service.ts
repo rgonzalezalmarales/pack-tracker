@@ -65,7 +65,6 @@ export class PackageService {
     andWhere['status'] = status ? status : { $ne: PackStatus.Delivered };
 
     if (description) {
-      // $regex: new RegExp('^' + description.toLowerCase(), 'i'),
       andWhere['description'] = {
         $regex: new RegExp(description.toLowerCase()),
         $options: 'i',
@@ -76,17 +75,16 @@ export class PackageService {
   }
 
   async findAll(filters: FiltersPackageDto) {
-    const { limit = this.defaultLimit, offset = 0 } = filters;
+    const { limit = this.defaultLimit, offset = 0, sort } = filters;
 
     const andWhere = this.createAndWhere(filters);
+    const andSort = sort || '-createdAt';
 
     const result = await this.packageModel
       .find(andWhere)
       .limit(limit)
       .skip(offset)
-      .sort({
-        createdAt: -1,
-      })
+      .sort(andSort)
       .select('-__v, -identifier');
 
     const count = await this.packageModel.find(andWhere).countDocuments();
@@ -98,7 +96,7 @@ export class PackageService {
   }
 
   async getSatusByIdent(identifier: string) {
-    return this.packageModel
+    const pack: Package = await this.packageModel
       .findOne({
         identifier,
       })
@@ -109,14 +107,26 @@ export class PackageService {
         status: true,
         _id: false,
       });
+
+    if (!pack) {
+      throw new NotFoundException(
+        `Package with identifier '${identifier}' not found`,
+      );
+    }
+
+    return pack;
   }
 
   findOne(id: string) {
-    return this.packageModel
-      .findOne({
-        _id: id,
-      })
-      .select('-identifier');
+    try {
+      return this.packageModel
+        .findOne({
+          _id: id,
+        })
+        .select('-identifier');
+    } catch (error) {
+      this.handleExceptions(error);
+    }
   }
 
   private handleExceptions(error: any) {
@@ -149,10 +159,11 @@ export class PackageService {
         );
 
       const status = finished ? PackStatus.Delivered : PackStatus.Transit;
-
+      const nowDate = new Date(Date.now());
       pack.status = status;
+      pack.updatedAt = nowDate;
       pack.route.push({
-        createdAt: new Date(Date.now()),
+        createdAt: nowDate,
         description,
         address,
         status,

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClienAdapterService } from '@app/shared/adapters/http-client-adapter.service';
 import { environment as env } from '@env/environment';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { IFilters } from '../interfaces';
 import { IPackage, IPagPacks } from '../interfaces/pack-status.inteface';
 
@@ -25,13 +25,6 @@ export class PackageService {
         ...filters,
       },
     });
-
-    // .pipe(
-    //   map((data: any) => {
-    //     if (!data?.length) return [];
-    //     return data;
-    //   })
-    // );
   }
 
   getStatus(identifier: string): Observable<IPackage> {

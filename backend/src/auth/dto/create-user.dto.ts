@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
+  IsBoolean,
   IsEmail,
   IsOptional,
   IsString,
@@ -34,6 +35,14 @@ export class CreateUserDto {
   @IsString()
   @MinLength(1)
   fullName: string;
+
+  @ApiProperty({
+    example: 'true',
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isActive: boolean;
 
   @ApiProperty({
     example: `[${ValidRoles.Admin}]`,

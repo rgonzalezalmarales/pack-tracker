@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsNumber, IsPositive, IsString } from 'class-validator';
 
 export class CreatePackageDto {
   @ApiProperty({
@@ -15,6 +15,14 @@ export class CreatePackageDto {
   })
   @IsString()
   description: string;
+
+  @ApiProperty({
+    description: 'Peso en kg',
+    example: '2',
+  })
+  @IsNumber()
+  @IsPositive()
+  weight: number;
 
   @ApiProperty({
     example: 'Centro Principal ave 40. Los Pinos',

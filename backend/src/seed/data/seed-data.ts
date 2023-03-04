@@ -21,6 +21,7 @@ export const initialData: SeedData = {
       fullName: 'Root Admin',
       password: bcrypt.hashSync('Abc123', 10),
       roles: [ValidRoles.Admin.toString()],
+      isActive: true,
     },
   ],
 };

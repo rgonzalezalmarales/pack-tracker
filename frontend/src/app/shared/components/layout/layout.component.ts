@@ -4,6 +4,8 @@ import { Observable, Subscription } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { routerTransition } from 'src/app/core/animations/animations';
 import { AuthService } from '@app/core/services/auth.service';
+import { Role } from 'src/app/views/+account/interfaces/acount.interface';
+import { IMenu } from '@app/core/interfaces/menu.interface';
 
 @Component({
   selector: 'app-layout',
@@ -19,36 +21,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
 
-  menu: any[] = [
-    {
-      link: '',
-      title: 'Usuarios',
-      subMenu: [
-        {
-          link: 'account/',
-          title: 'Listado',
-        },
-        // {
-        //   link: 'auth/login',
-        //   title: 'login',
-        // },
-      ],
-    },
-    {
-      link: '',
-      title: 'Paquetes',
-      subMenu: [
-        {
-          link: 'package',
-          title: 'Reporte',
-        },
-        {
-          link: 'package/status',
-          title: 'Estatus',
-        },
-      ],
-    },
-  ];
+  userRoles: Role[] = [];
+
+  menu: IMenu[] = [];
 
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
@@ -68,38 +43,54 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.authService.logout();
   };
 
-  ngOnInit() {
-    this.userName = this.authService.userValue?.fullName || '';
+  initMenu() {
+    this.menu = [
+      {
+        link: '',
+        title: 'Gestión',
+        roles: [Role.Admin],
+        subMenu: [
+          {
+            link: 'account/',
+            title: 'Usuarios',
+            roles: [Role.Admin],
+          },
+        ],
+      },
+      {
+        link: '',
+        title: 'Paquetes',
+        subMenu: [
+          {
+            link: 'package',
+            title: 'Reporte',
+            roles: [Role.OperationsManager, Role.DeliviryMan],
+          },
+          {
+            link: 'package/status',
+            title: 'Estatus',
+            // roles: [Role.Receiver],
+          },
+        ],
+        // roles: [Role.OperationsManager, Role.DeliviryMan, Role.Receiver],
+      },
+    ];
   }
 
-  // ===============Literata============
-  // ngOnInit() {
-  //   this.isLoggedIn$ = this.authService.isAuthenticated();
-  //   this.firstname$ = this.authService.getFirstname();
+  ngOnInit() {
+    this.subscriptions.push(
+      this.authService.user.subscribe({
+        next: (user) => {
+          this.userName = user?.fullName || '';
+          this.userRoles = user?.roles || [];
 
-  //   this.subscriptions.push(
-  //     this.authService.getRoles().subscribe((roles) => {
+          this.initMenu();
 
-  //       this.initMenu();
-  //       this.userRoles = roles;
-
-  //     })
-  //   );
-
-  //   this.subscriptions.push(
-  //     this.router.events
-  //       .pipe(filter((event) => event instanceof ActivationEnd))
-  //       .subscribe((event: ActivationEnd) => {
-  //         let lastChild = event.snapshot;
-  //         while (lastChild.children.length) {
-  //           lastChild = lastChild.children[0];
-  //         }
-
-  //         const { title, pageTitle, module } = lastChild.data;
-  //         this.title = pageTitle ? pageTitle : title;
-  //         this.module = module;
-  //       })
-  //   );
+          console.log('userRoles', this.userRoles);
+        },
+      })
+    );
+  }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((s) => {

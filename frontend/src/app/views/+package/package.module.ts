@@ -9,6 +9,8 @@ import { DateEsPipe } from '@app/shared/pipes/date-es.pipe';
 import { PackageComponent } from './package/package.component';
 import { Role } from '../+account/interfaces/acount.interface';
 import { PackageEditComponent } from './package-edit/package-edit.component';
+import { TranslocoRootModule } from 'src/app/transloco/transloco-root.module';
+import { TranslocoModule } from '@ngneat/transloco';
 
 const routes: Routes = [
   {
@@ -16,7 +18,7 @@ const routes: Routes = [
     component: PackageListComponent,
     title: 'Paquetes',
     data: {
-      expectedRole: [Role.OperationsManager, Role.DeliviryMan, Role.Admin],
+      expectedRole: [Role.OperationsManager, Role.DeliviryMan],
     },
     canActivate: [AuthGuard],
   },
@@ -24,26 +26,26 @@ const routes: Routes = [
     path: 'package/:identifier/status',
     component: PackageStatusComponent,
     title: 'Estatus envío',
-    data: {
-      expectedRole: [],
-    },
-    canActivate: [AuthGuard],
+    // data: {
+    //   expectedRole: [],
+    // },
+    // canActivate: [AuthGuard],
   },
   {
     path: 'status',
     component: PackageStatusComponent,
     title: 'Estatus envío',
-    data: {
-      expectedRole: [],
-    },
-    canActivate: [AuthGuard],
+    // data: {
+    //   expectedRole: [],
+    // },
+    // canActivate: [AuthGuard],
   },
   {
     path: 'add',
     component: PackageComponent,
     title: 'Crear Envío',
     data: {
-      expectedRole: [Role.DeliviryMan, Role.Admin],
+      expectedRole: [Role.DeliviryMan],
     },
     canActivate: [AuthGuard],
   },
@@ -52,7 +54,7 @@ const routes: Routes = [
     component: PackageEditComponent,
     title: 'Actualizar Paquete',
     data: {
-      expectedRole: [Role.OperationsManager, Role.DeliviryMan, Role.Admin],
+      expectedRole: [Role.DeliviryMan],
     },
     canActivate: [AuthGuard],
   },
