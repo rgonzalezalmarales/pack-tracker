@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Query,
   Patch,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -25,6 +26,7 @@ import { ValidRoles } from 'src/auth/interfaces';
 import { Auth } from 'src/auth/decorators';
 import { UpdatePackageDto } from './dto';
 import { FiltersPackageDto } from './dto/filters-package.dto';
+import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id/parse-mongo-id.pipe';
 
 @ApiTags('Paquetes')
 @Controller('package')
@@ -86,7 +88,7 @@ export class PackageController {
     description: 'Identificador único del paquete',
   })
   @Get(':identifier/status')
-  getStatus(@Param('identifier') identifier: string) {
+  getStatus(@Param('identifier', ParseUUIDPipe) identifier: string) {
     return this.packageService.getSatusByIdent(identifier);
   }
 
@@ -106,7 +108,7 @@ export class PackageController {
     description: 'Package not found',
   })
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseMongoIdPipe) id: string) {
     return this.packageService.findOne(id);
   }
 
@@ -126,7 +128,10 @@ export class PackageController {
     description: 'Package not found',
   })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePackageDto: UpdatePackageDto) {
+  update(
+    @Param('id', ParseMongoIdPipe) id: string,
+    @Body() updatePackageDto: UpdatePackageDto,
+  ) {
     return this.packageService.update(id, updatePackageDto);
   }
 }

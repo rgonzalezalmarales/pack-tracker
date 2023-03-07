@@ -62,7 +62,7 @@ export class UserController {
   @ApiNotFoundResponse({
     description: 'User not found',
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseMongoIdPipe) id: string) {
     return this.authService.findOne(id);
   }
 
@@ -95,7 +95,10 @@ export class UserController {
     description: 'User not found',
   })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(
+    @Param('id', ParseMongoIdPipe) id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
     return this.authService.update(id, updateUserDto);
   }
 
